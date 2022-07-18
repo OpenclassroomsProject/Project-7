@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+#__next {
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+.rightPanel form input {
+    /* width: 80%; */
+    /* max-width: 80%; */
+}
+header a {
+    /* margin-right: 2rem; / */
+}
+
+.pageContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    height: calc(100vh - 104px);
+    padding: 5vw;
+    text-align: justify;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.rightPanel {
+    animation: showLogPannel 1s;
+    animation-fill-mode: forwards;
+}
+@keyframes showLogPannel {
+    100% {
+        margin-right: 0;
+    }
+}
+
+/* .rightPanel.close {
+    animation: closeLogPannel 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes closeLogPannel {
+    0% {
+        margin-right: 0;
+    }
+    100% {
+        margin-right: -75%;
+    }
+} */
+
+/* @media (min-width: 500px) {
+    .rightPanel {
+        background-color: darkblue;
+        width: 25vw;
+    }
+} */
