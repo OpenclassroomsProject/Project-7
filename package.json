@@ -1,0 +1,22 @@
+{
+  "name": "p7-oc",
+  "version": "1.0.0",
+  "description": "Last project Formation OC",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/OpenclassroomsProject/Project-7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OpenclassroomsProject/Project-7/issues"
+  },
+  "homepage": "https://github.com/OpenclassroomsProject/Project-7#readme"
+}
