@@ -6,7 +6,12 @@ html,
 body {
     padding: 0;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+        Helvetica Neue, sans-serif; */
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+
+    /* overflow: hidden; */
 }
 #__next {
     overflow-x: hidden;
@@ -19,7 +24,23 @@ body {
 header a {
     /* margin-right: 2rem; / */
 }
+#root {
+    /* height: 100vh; */
+}
 
+/* .page {
+    @apply h-[calc(100vh-6.5rem)] m-auto sm:h-auto p-[4vw] sm:p-10;
+} */
+/* .pageSecondaryPink {
+    @apply bg-secondary-pink page;
+} */
+
+.title {
+    @apply h-14  flex items-center justify-center  border-b-2 border-tertiary-black;
+}
+.body {
+    @apply bg-gray-200 flex flex-col items-center h-[calc(100%-4rem)]  rounded-t rounded-b-xl p-4 overflow-x-auto;
+}
 .pageContent {
     display: flex;
     flex-direction: column;

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": " bash startFrontEnd.sh & bash startAPI.sh "
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,6 @@
   "bugs": {
     "url": "https://github.com/OpenclassroomsProject/Project-7/issues"
   },
-  "homepage": "https://github.com/OpenclassroomsProject/Project-7#readme"
+  "homepage": "https://github.com/OpenclassroomsProject/Project-7#readme",
+  "dependencies": {}
 }

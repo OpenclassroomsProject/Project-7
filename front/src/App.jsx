@@ -1,53 +1,77 @@
-import React from 'react';
-import {server} from './server'
-
-import { useState, useEffect } from 'react';
-// import '../styles/globals.css';
-
 import Header from './components/header/Header';
+
 import { addHeaderJWT } from './components/fetch/addHeaderJWT';
+import { server } from './server';
 
+import React, { useState, useEffect, createContext, useContext } from 'react';
+import Page from './components/templates/_page';
+import { ThemeContext } from './pages/profil/Setting';
 
+export const UserContext = createContext(false);
+// const theme = {
+//     'dark',
+//     light: { header: '' },
+//     red: { header: 'bg-primary-red text-white ' },
+// };
 
-const useSetUserConnected = (initialValue = false) => {
-    const [userConnected, setConnected] = useState(initialValue);
+export const App = ({ children }) => {
+    const [theme, setTheme] = useState(useContext(ThemeContext));
 
-    const toggleConnected = (JWT = false) => setConnected(JWT);
-    return [userConnected, toggleConnected];
-};
+    const [userData, setDataUser] = useState(false);
 
-function App() {
-    // const [{ userConnected }, setuserConnected] = useState({ userConnected: false });
-    const [userConnected, toggleConnected] = useSetUserConnected();
+    const toggleConnect = (JWT = false, id = false, pseudo = false, avatar = false) => {
+        const Obj = !JWT
+            ? false
+            : {
+                  jwt: JWT,
+                  id: id,
+                  pseudo: pseudo,
+                  avatar: avatar,
+              };
+        // @ts-ignore
+        setDataUser(Obj);
+    };
 
     useEffect(() => {
-        if (localStorage.getItem('JWT') && userConnected === false) {
-            (async function () {
-                // myHeaders.append('authorization', 'bearer ' + localStorage.getItem('JWT'));
-               const myHeaders=  addHeaderJWT();
-                let init = { method: 'GET', headers: myHeaders, mode: 'cors' };
+        if (localStorage.getItem('JWT') && !userData) {
+            console.log('Log request send with JWT token ...');
 
-                const res = await fetch(server+'api/auth', init);
+            // myHeaders.append('authorization', 'bearer ' + localStorage.getItem('JWT'));
+            const myHeaders = addHeaderJWT();
+            let init = { method: 'GET', headers: myHeaders, mode: 'cors' };
 
-                if (!res.ok) return;
-                return toggleConnected(localStorage.getItem('JWT'));
-            })();
+            // @ts-ignore
+            fetch(server + 'api/auth', init)
+                .then((res) => {
+                    if (res.ok) return res.json();
+                })
+                .then((user) => {
+                    // @ts-ignore
+                    toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar);
+                });
+        } else {
+            // setDataUser(false);
         }
-    }, [userConnected,toggleConnected]);
-    
+    }, [userData]);
 
     return (
-    <>
-        <Header userConnected={[userConnected, toggleConnected]}/>
-    </>
+        console.log('render app'),
+        (
+            <ThemeContext.Provider
+                value={{
+                    ...theme,
+                    // @ts-ignore
+                    setTheme,
+                }}
+            >
+                <UserContext.Provider
+                    // @ts-ignore
+                    value={{ userData, setDataUser }}
+                >
+                    <Header />
+                    <Page>{children}</Page>
+                </UserContext.Provider>
+            </ThemeContext.Provider>
+        )
     );
-}
-
-// export async function getStaticProps(){
-//   console.log('ici');
-//   return {
-//     props:{Loading:LoadingScreen}
-//   }
-// }
-
-export default App;
+};

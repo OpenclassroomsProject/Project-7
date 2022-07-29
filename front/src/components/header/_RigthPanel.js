@@ -1,4 +1,5 @@
-import {  useEffect } from 'react';
+import React from 'react';
+import { useEffect } from 'react';
 import userOnMobile from './_detectMobile';
 
 export default function RightPanel({ children, visible, unmount }) {
@@ -8,7 +9,8 @@ export default function RightPanel({ children, visible, unmount }) {
     }
 
     function close(e) {
-        if (e.target.closest('.rightPanel') || e.target.closest('nav')) return window.addEventListener('click', close, { once: true, capture: true });
+        if (e.target.closest('.rightPanel') || e.target.closest('nav'))
+            return window.addEventListener('click', close, { once: true, capture: true });
         if (document.getElementsByClassName('rightPanel')[0]) {
             return unmount(false);
         }
@@ -63,7 +65,9 @@ export default function RightPanel({ children, visible, unmount }) {
                 }
             }
             `}</style>
-                <div className={`${className} sm:flex sm:mr-[-25vw] bg-gray-200 text-black h-screen z-[1] sm:w-[25vw] overflow-hidden justify-center w-[75vw]  mr-[-75vw] `}>
+                <div
+                    className={`${className} sm:flex sm:mr-[-25vw] bg-gray-200 text-black h-screen z-[1] sm:w-[25vw] overflow-hidden justify-center w-[75vw]  mr-[-75vw] `}
+                >
                     {children}
 
                     {/* {showChlidren && children} */}

@@ -4,6 +4,10 @@ This API was create in JavasScript with [Node](https://github.com/nodejs/node) v
 ## Development server
 Go to the root folder and run `npm install` for install all required packages.
 
+## Dev Server
+
+Run `nodemon start` to start server with auto reboot when modify any .js files
+
 ## Run server 
 
 Run `node server` to start ther server.
