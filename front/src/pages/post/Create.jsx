@@ -130,61 +130,6 @@ export default function CreatePost({ title }) {
             ) : (
                 false
             )}
-
-            {/* <form id='form' className='body h-auto overflow-hidden'>
-                <label className='flex flex-col'>
-                    Titre :<input className='bg-gray-300' type='text' id='title' />
-                </label>
-
-                <textarea className='bg-gray-300 w-full h-full mt-2 resize-none  ' id='textArea'></textarea>
-
-                <div
-                    className={`  bg-gray-400 w-full mt-2  ${
-                        image ? ' hover:bg-secondary-pink cursor-pointer border-2 hover:border-tertiary-black' : false
-                    }`}
-                >
-                    {image ? (
-                        // @ts-ignore
-                        <ImageDelete className='flex p-2 ' edit>
-                            <>
-                                <div className='w-[30%]'>
-                                    <img className=' object-cover  ' src={createObjectURL} alt='preview before upload form' />
-                                </div>
-                                <div className='w-full flex  '>
-                                    <span className=' text-xs text-center m-auto'>{image.name}</span>
-
-                                    <FontAwesomeIcon
-                                        icon={faTrashCan}
-                                        className={'mt-auto mb-auto mr-3 hover:text-primary-red cursor-pointer'}
-                                        onClick={() => {
-                                            setImage(false);
-                                            // var txt;
-                                            // if (confirm('Press a button!')) {
-                                            //   txt = 'You pressed OK!';
-                                            // } else {
-                                            //   txt = 'You pressed Cancel!';
-                                            // }
-                                            // console.log(txt);
-                                            // alert('Confirmation de supression');
-                                        }}
-                                    />
-                                </div>
-                            </>
-                        </ImageDelete>
-                    ) : (
-                        <input className={'p-2  cursor-pointer'} type='file' id='file' onChange={uploadToClient} />
-                    )}
-                    <img className='w-1/4' src={createObjectURL} alt='preview before upload form' />
-                </div>
-
-                <button
-                    type='submit'
-                    className='bg-tertiary-black text-white p-2 mt-2 w-full rounded-md'
-                    onClick={uploadToServer}
-                >
-                    Envoyer
-                </button>
-            </form> */}
         </main>
     );
 }

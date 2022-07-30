@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 // if (!objectId.isValid(req.params.id)
 const objectId = require('mongodb').ObjectId;
 
