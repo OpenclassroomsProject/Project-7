@@ -12,4 +12,4 @@ In the project directory, you can run:
 
 This command is used to start the API as well as the Front.
 
-Open [http://localhost:3000] (http://localhost:3000) to view it in your browser.
+Open (http://localhost:3000) to view it in your browser.
