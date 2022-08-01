@@ -1,4 +1,4 @@
-# =======  Groupomania app =============
+# Groupomania app 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and Tailwind V3.
 
@@ -10,6 +10,6 @@ In the project directory, you can run:
 
 ### `npm start`
 
-This command is used to start the API as well as the Front.\
+This command is used to start the API as well as the Front.
 
 Open [http://localhost:3000] (http://localhost:3000) to view it in your browser.
