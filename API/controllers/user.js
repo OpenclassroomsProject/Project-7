@@ -37,7 +37,7 @@ exports.login = (req, res) => {
                         return res.status(401).json({ error: 'Mot de passe incorrect !' });
                     }
 
-                    res.status(200).json({ avatar: user.avatar, pseudo: user.pseudo, userId: user._id, JWT: createJWT(user) });
+                    res.status(200).json({ avatar: user.avatar, pseudo: user.pseudo, userId: user._id, JWT: createJWT(user), admin: user.admin });
                 })
                 .catch((error) => res.status(500).send({ error }));
         })
@@ -46,9 +46,10 @@ exports.login = (req, res) => {
 
 exports.verifyJWT = (req, res) => {
     auth(req, res, () => {
-        res.status(200).json({ msg: 'Successfully login !', _id: req._id, pseudo: req.pseudo, avatar: req.avatar });
+        // console.log(req);
+        res.status(200).json({ msg: 'Successfully login !', _id: req._id, pseudo: req.pseudo, avatar: req.avatar, admin: req.admin });
     });
 };
 function createJWT(data) {
-    return jwt.sign({ userId: data._id, pseudo: data.pseudo, avatar: data.avatar }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' });
+    return jwt.sign({ userId: data._id, pseudo: data.pseudo, avatar: data.avatar, admin: data.admin }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' });
 }

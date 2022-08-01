@@ -1,78 +1,55 @@
-import React from 'react';
-import { useEffect } from 'react';
-import userOnMobile from './_detectMobile';
 
-export default function RightPanel({ children, visible, unmount }) {
-    let className = 'rightPanel';
+import React, { useEffect } from 'react';
+
+export default function RightPanel ({ children, visible, unmount }) {
+  let className = 'rightPanel';
+  if (!visible) {
+    className += ' close';
+  }
+  useEffect(() => {
     if (!visible) {
-        className += ' close';
+      const timer = setTimeout(() => {
+        // unmount();
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
-
-    function close(e) {
-        if (e.target.closest('.rightPanel') || e.target.closest('nav'))
-            return window.addEventListener('click', close, { once: true, capture: true });
-        if (document.getElementsByClassName('rightPanel')[0]) {
-            return unmount(false);
-        }
-    }
-
-    window.addEventListener('click', close, { once: true, capture: true });
-
-    // useEffect(() => {
-    // window.onresize = () => {
-    //     if (window.innerWidth > 500) {
-    //         console.log(window.innerWidth);
-    //         document.getElementsByClassName('rightPanel')[0].classList.add('desktop');
-    //     }else{
-
-    //     }
-    // };
-
-    // }, []);
-    useEffect(() => {
-        if (!visible) {
-            const timer = setTimeout(() => {
-                unmount();
-            }, 1000);
-            return () => {
-                clearTimeout(timer);
-            };
-        }
-    }, [visible, unmount]);
-
-    // useEffect(() => {
-    //     return () => {
-    //         window.removeEventListener('click', close);
-    //     };
-    // }, []);
-
-    return (
-        console.log('rendre_panel'),
-        (
-            <>
-                <style>{`
+  }, [visible, unmount]);
+  return (
+    <>
+      <style>{`
                 .rightPanel.close {
                     animation: closeLogPannel 1s;
                     animation-fill-mode: forwards;
                 }
 
                 @keyframes closeLogPannel {
-                0% {
-                    margin-right: 0;
+                    0% {
+                        margin-right: 0;
+                    }
+                    100% {
+                        margin-right: -15rem;
+                    }
                 }
-                100% {
-                    margin-right: ${userOnMobile() ? '-75vw' : '-25vw'};
+                .rightPanel {
+                    animation: showLogPannel 1s;
+                    animation-fill-mode: forwards;
                 }
-            }
-            `}</style>
-                <div
-                    className={`${className} sm:flex sm:mr-[-25vw] bg-gray-200 text-black h-screen z-[1] sm:w-[25vw] overflow-hidden justify-center w-[75vw]  mr-[-75vw] `}
-                >
-                    {children}
+                @keyframes showLogPannel {
+                    0%{
+                    margin-right: -15rem;
 
-                    {/* {showChlidren && children} */}
-                </div>
-            </>
-        )
-    );
+                    }
+                    100% {
+                        margin-right: 0;
+                    }
+                }
+            `}</style>
+      <div
+        className={`hidden ${className} w-60 -mr-80  bg-gray-200 text-black h-screen z-[100] overflow-hidden sm:flex p-auto justify-center `}>
+        {children}
+      </div>
+    </>
+  );
 }

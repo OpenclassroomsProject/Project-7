@@ -1,6 +1,4 @@
-
-
-function UnixToDate(date) {
+function UnixToDate (date) {
   if (!date) return undefined;
   const unixTimestamp = date.slice(0, -3);
   const date_ = new Date(unixTimestamp * 1000);
@@ -19,7 +17,7 @@ function UnixToDate(date) {
 
   return dateTime; // 👉️ 24-09-2022 09:25:32
 
-  function padTo2Digits(num) {
+  function padTo2Digits (num) {
     return num.toString().padStart(2, '0');
   }
 }

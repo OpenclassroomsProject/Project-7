@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
+/* eslint-disable multiline-ternary */
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faThumbsUpLiked } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
-import { faCommentDots, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
+import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
 import {
   faShare,
   faEllipsisVertical,
@@ -14,7 +16,6 @@ import {
 import { UserContext } from '../../../App';
 import { Link } from 'react-router-dom';
 import { addHeaderJWT } from '../../fetch/addHeaderJWT';
-import ConfirmModal from '../../modal/Modal';
 import EditPost from '../../../pages/post/Edit';
 
 // const { Link } = require('react-router-dom');
@@ -22,9 +23,9 @@ const { server } = require('../../../server');
 const UnixToDate = require('../../date/UnixToDate').default;
 
 // @ts-ignore
-function PostTemplate({
+function PostTemplate ({
   title,
-  textArea,
+  description,
   _id,
   createBy,
   createByPseudo,
@@ -33,7 +34,11 @@ function PostTemplate({
   likes,
   usersLiked
 }) {
+  // eslint-disable-next-line camelcase
   const ref_description = useRef();
+  const userContext = useContext(UserContext);
+  console.log(userContext);
+  // @ts-ignore
 
   const headerFetch = addHeaderJWT();
   const [Unmount, setUnmount] = useState(false);
@@ -44,21 +49,35 @@ function PostTemplate({
   const [clickOption, setClickOption] = useState(false);
   const [clickEdit, setClickEdit] = useState(false);
 
-  // @ts-ignore
-  const { userData } = useContext(UserContext);
-
   const [allLikes, setAllLikes] = useState(likes);
-  const [userLiked, setUserLike] = useState(usersLiked.indexOf(userData.id) === -1 ? false : true);
+  // @ts-ignore
+  const [userLiked, setUserLike] = useState(
+    // @ts-ignore
+    usersLiked.indexOf(userContext.userData.id) !== -1
+  );
+  const [currentDescritpion, setCurrentDescription] = useState(description);
   const [openDescritpion, setOpenDescritpion] = useState(false);
-  const [btnMore, setBtnMore] = useState(false);
+  const [image, setImage] = useState(imagesUrl);
 
-  let admin = false;
-  if (userData.id === createBy) {
-    admin = true;
-  }
+  const [btnMore, setBtnMore] = useState(false);
+  const [admin, setAdmin] = useState(false);
+
+  //     let admin = false;
+  // if (userData.id === createBy) {
+  //     admin = true;
+  //   }
+  useEffect(() => {
+    // @ts-ignore
+    if (userContext.userData.id === createBy || userContext.userData.admin) {
+      console.log(userContext);
+      setAdmin(true);
+    } else {
+      if (admin) setAdmin(false);
+    }
+  }, [userContext, createBy, admin]);
 
   useEffect(() => {
-    function convertRemToPixels(rem) {
+    function convertRemToPixels (rem) {
       return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
     }
     // @ts-ignore
@@ -71,9 +90,9 @@ function PostTemplate({
       if (nombreLignes > 3) setBtnMore(true);
     }
   }, []);
+
   useEffect(() => {
     if (clickEdit) {
-      console.log('ici');
       // @ts-ignore
       ref_description.current.focus();
     }
@@ -81,7 +100,7 @@ function PostTemplate({
 
   const submitVote = (like = true) => {
     // eslint-disable-next-line default-case
-    let action = like ? 'like' : 'dislike';
+    const action = like ? 'like' : 'dislike';
 
     return fetch(server + 'api/post/' + action + '/' + _id, {
       headers: headerFetch
@@ -118,22 +137,18 @@ function PostTemplate({
   };
   const handleClickDeletePost = () => {
     console.log('Suppression en cours ... ');
-    fetch(server + 'api/post/delete/' + _id, { headers: headerFetch }).then((res) => {
-      if (!res.ok) return false;
-      setUnmount(true);
-    });
+    fetch(server + 'api/post/delete/' + _id, { headers: headerFetch, method: 'delete' }).then(
+      (res) => {
+        if (!res.ok) return false;
+        setUnmount(true);
+      }
+    );
   };
   if (Unmount) return <></>;
-
-  // function compterLignes() {
-  //     var contenu = document.getElementById('contenu');
-  //     alert('Nombre de lignes: ' + nombreLignes);
-  // }
-
   return (
     <>
       <section
-        className={`relative bg-white flex flex-col mt-2  text-[#5d5c5c] `}
+        className={'relative bg-white flex flex-col mb-2  text-[#5d5c5c]  sm:rounded-xl sm:w-[500px] '}
         id={_id}
         key={_id}>
         <div>
@@ -148,8 +163,7 @@ function PostTemplate({
               <div className="mr-auto">
                 <Link to={'/profil/' + createBy}>
                   <div className=" text-sm font-serif font-semibold text-black">
-                    {' '}
-                    {createByPseudo}{' '}
+                    {createByPseudo}
                   </div>
                 </Link>
                 <div className=" text-xs text-[#aaa]"> {UnixToDate(date)}</div>
@@ -174,23 +188,19 @@ function PostTemplate({
             ) : (
               false
             )}
-            {/*====================================================   Descritpion   ==================================================== */}
-
-            {/* {clickEdit && admin ? (
-
-                        ) : (
-                        )} */}
+            {/* ====================================================   Descritpion   ==================================================== */}
             <Link to={clickEdit ? '/' : '/post/' + _id} className="  ">
               <p
+                // eslint-disable-next-line camelcase
                 ref={ref_description}
                 className={`relative overflow-hidden text-left text-sm mt-4 mb-2  ${
                   !openDescritpion && 'max-h-16  '
                 }`}
                 style={{ lineHeight: '1.25rem' }}>
-                {textArea}
+                {currentDescritpion}
               </p>
             </Link>
-            {/*==================================================== End Descritpion ==================================================== */}
+            {/* ==================================================== End Descritpion ==================================================== */}
           </div>
         </div>
 
@@ -202,7 +212,7 @@ function PostTemplate({
         </button>
 
         {clickOption ? (
-          <div className="absolute bg-white  z-10  right-0 top-[7%] flex   flex-col shadow-2xl items-start  font-semibold pt-2 pb-2 border-[1px] ">
+          <div className="absolute bg-white  z-10  right-0 top-14 flex   flex-col shadow-2xl items-start  font-semibold pt-2 pb-2 border-[1px] ">
             {admin ? (
               <>
                 <button
@@ -221,7 +231,7 @@ function PostTemplate({
                   className="pr-8 pl-4 leading-[3rem] mr-auto"
                   onClick={handleClickDeletePost}>
                   <FontAwesomeIcon icon={faTrashCan} className="mr-4" />
-                  <span>Suprimer</span>
+                  <span>Supprimer</span>
                 </button>
               </>
             ) : (
@@ -264,13 +274,13 @@ function PostTemplate({
         {imagesUrl[0] ? (
           <img
             className="border-b-[1px]"
-            src={server + 'images/' + createBy + '/' + imagesUrl}
+            src={server + 'images/' + createBy + '/' + image}
             alt="post"></img>
         ) : (
           false
         )}
 
-        {/* ============= module like ============= */}
+        {/* ============= module like / share/ coments ============= */}
         <div className="flex justify-between items-center pl-4 pr-4 h-8 border-w-1 border-#f2f2f2 border-b-[1px]  text-xs text-[#aaa] ">
           <div className="flex">
             <div className=" bg-blue-500 rounded-full flex h-fit mr-1 mt-auto mb-auto">
@@ -309,7 +319,8 @@ function PostTemplate({
         {clickEdit && admin && (
           // @ts-ignore
           <EditPost
-            contentToEdit={textArea}
+            contentToEdit={{ description: { current: currentDescritpion, update: setCurrentDescription }, image: { current: image[0], update: setImage } }}
+
             post_id={_id}
             unmount={() => {
               setClickEdit(false);

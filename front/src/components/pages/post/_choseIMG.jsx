@@ -1,5 +1,5 @@
-import React, { createRef, useState } from 'react';
-import ImageDelete from '../../img/ImageDelete';
+import React, { createRef } from 'react';
+// import ImageDelete from '../../img/ImageDelete';
 
 const ChoseIMG = ({ setImage }) => {
   const fileRef = createRef();

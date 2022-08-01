@@ -5,38 +5,38 @@ import themeRed from '../../components/pages/setting/_themeRed';
 
 export const ThemeContext = createContext({ themeName: 'light', ...themeLight, setTheme: undefined });
 
-export default function Setting() {
-    const themeContext = useContext(ThemeContext);
-    console.log(themeContext);
-    let theme = {};
-    const switchTheme = (/** @type {{ target: { value: any; }; }} */ e) => {
-        theme.themeName = e.target.value;
+export default function Setting () {
+  const themeContext = useContext(ThemeContext);
+  console.log(themeContext);
+  let theme = {};
+  const switchTheme = (/** @type {{ target: { value: any; }; }} */ e) => {
+    theme.themeName = e.target.value;
 
-        switch (theme.themeName) {
-            case 'dark':
-                console.log('Switch theme in dark mode ! ');
-                theme = { ...theme, ...themeDark };
-                break;
-            case 'light':
-                console.log('Switch theme in  light mode !');
-                theme = { ...theme, ...themeLight };
+    switch (theme.themeName) {
+      case 'dark':
+        console.log('Switch theme in dark mode ! ');
+        theme = { ...theme, ...themeDark };
+        break;
+      case 'light':
+        console.log('Switch theme in  light mode !');
+        theme = { ...theme, ...themeLight };
 
-                theme.select = 'bg-white border-[1px] border-black ';
-                break;
-            case 'red':
-                console.log('switch red theme ');
-                theme = { ...theme, ...themeRed };
+        theme.select = 'bg-white border-[1px] border-black ';
+        break;
+      case 'red':
+        console.log('switch red theme ');
+        theme = { ...theme, ...themeRed };
 
-                theme.select = 'bg-secondary-pink ';
-                break;
-            default:
-                break;
-        }
+        theme.select = 'bg-secondary-pink ';
+        break;
+      default:
+        break;
+    }
 
-        return themeContext.setTheme({ ...theme });
-    };
+    return themeContext.setTheme({ ...theme });
+  };
 
-    return (
+  return (
         <>
             <div className='title'>
                 <h1> Paramètres </h1>
@@ -54,5 +54,5 @@ export default function Setting() {
                 </select>
             </div>
         </>
-    );
+  );
 }

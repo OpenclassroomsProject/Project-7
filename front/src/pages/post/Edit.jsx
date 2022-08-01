@@ -1,4 +1,4 @@
-import { faSquareXmark, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import { addHeaderJWT } from '../../components/fetch/addHeaderJWT';
@@ -7,7 +7,13 @@ import Modal from '../../components/modal/Modal';
 import ChoseIMG from '../../components/pages/post/_choseIMG';
 import { server } from '../../server';
 
-export default function EditPost({ contentToEdit, unmount, post_id }) {
+// eslint-disable-next-line camelcase
+export default function EditPost ({ contentToEdit, unmount, post_id }) {
+
+  const currentDescritption = contentToEdit.description.current;
+  const updateDescritpion = contentToEdit.description.update;
+  const updateImage = contentToEdit.image.update;
+
   const modalEdit = useRef();
   //   const modalConfirm = useRef();
   const [modalConfirm, setModalConfirm] = useState(false);
@@ -55,21 +61,38 @@ export default function EditPost({ contentToEdit, unmount, post_id }) {
   };
   const handleClickSubmit = () => {
     if (Image || onChangeDescription) {
-      let data = {};
+      const body = new FormData();
       if (onChangeDescription) {
         // @ts-ignore
-        data.description = description.current.value;
+        body.append('description', description.current.value);
       }
       if (Image) {
         // @ts-ignore
-        data.image = Image.File;
+        // body.append('picture', true);
+        body.append('file', Image.File);
       }
+
+      // @ts-ignore
+
+      // const header = addHeaderJWT();
+      // header.append('Content-Type','multipart/form-data')
+
+      // eslint-disable-next-line camelcase
       fetch(server + 'api/post/edit/' + post_id, {
         headers: addHeaderJWT(),
-        body: JSON.stringify(data),
-        method: 'POST'
+        method: 'PUT',
+        body
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        };
+        alert('Error during update form.');
+      }).then(data => {
+        unmount();
+        // @ts-ignore
+        if (onChangeDescription) updateDescritpion(description.current.value);
+        if (Image) updateImage([data.imageName]);
       });
-      console.log('clic submit');
     } else {
       unmount();
     }
@@ -80,20 +103,12 @@ export default function EditPost({ contentToEdit, unmount, post_id }) {
       <div
         ref={modalEdit}
         className=" relative top-[20%] bg-white  m-6 flex flex-col rounded-lg max-h-[80%] ">
-        {/* <div className="h-10 flex border-b-[1px] justify-between items-center p-2 pr-0">
-          <h1 className="text-black font-serif font-semibold "> Modification </h1>
-          <FontAwesomeIcon
-            icon={faXmark}
-            className="text-2xl text-[#aaa] p-2 hover:text-black cursor-pointer"
-            onClick={handleClickClose}
-          />
-        </div> */}
         <Title>Modification</Title>
 
         <div className="flex flex-col justify-between">
           <textarea
             ref={description}
-            defaultValue={contentToEdit}
+            defaultValue={currentDescritption}
             className={
               ' focus:outline-none focus:bg-gray-100  resize-none m-2 text-black  p-1 mb-4 font-serif h-screen max-h-32'
             }

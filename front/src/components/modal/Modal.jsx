@@ -1,9 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { createRef, useState } from 'react';
-import { faSquareXmark } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from 'react';
 
-function Modal({ children, className = null }) {
-  const [close, setClose] = useState(false);
+function Modal ({ children, className = null }) {
+  const [close] = useState(false);
 
   if (close) {
     return <></>;

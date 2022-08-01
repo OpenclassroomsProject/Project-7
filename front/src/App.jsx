@@ -15,63 +15,63 @@ export const UserContext = createContext(false);
 // };
 
 export const App = ({ children }) => {
-    const [theme, setTheme] = useState(useContext(ThemeContext));
+  const [theme, setTheme] = useState(useContext(ThemeContext));
 
-    const [userData, setDataUser] = useState(false);
+  const [userData, setDataUser] = useState(false);
 
-    const toggleConnect = (JWT = false, id = false, pseudo = false, avatar = false) => {
-        const Obj = !JWT
-            ? false
-            : {
-                  jwt: JWT,
-                  id: id,
-                  pseudo: pseudo,
-                  avatar: avatar,
-              };
-        // @ts-ignore
-        setDataUser(Obj);
-    };
+  const toggleConnect = (JWT = false, id = false, pseudo = false, avatar = false, admin = false) => {
+    const Obj = !JWT
+      ? false
+      : {
+          jwt: JWT,
+          id,
+          pseudo,
+          avatar,
+          admin
+        };
+    // @ts-ignore
+    setDataUser(Obj);
+  };
 
-    useEffect(() => {
-        if (localStorage.getItem('JWT') && !userData) {
-            console.log('Log request send with JWT token ...');
+  useEffect(() => {
+    if (localStorage.getItem('JWT') && !userData) {
+      console.log('Log request send with JWT token ...');
 
-            // myHeaders.append('authorization', 'bearer ' + localStorage.getItem('JWT'));
-            const myHeaders = addHeaderJWT();
-            let init = { method: 'GET', headers: myHeaders, mode: 'cors' };
+      // myHeaders.append('authorization', 'bearer ' + localStorage.getItem('JWT'));
+      const myHeaders = addHeaderJWT();
+      const init = { method: 'GET', headers: myHeaders, mode: 'cors' };
 
-            // @ts-ignore
-            fetch(server + 'api/auth', init)
-                .then((res) => {
-                    if (res.ok) return res.json();
-                })
-                .then((user) => {
-                    // @ts-ignore
-                    toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar);
-                });
-        } else {
-            // setDataUser(false);
-        }
-    }, [userData]);
+      // @ts-ignore
+      fetch(server + 'api/auth', init)
+        .then((res) => {
+          if (res.ok) return res.json();
+        })
+        .then((user) => {
+          console.log(user);
+          // @ts-ignore
+          toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar, user.admin);
+        });
+    } else {
+      // setDataUser(false);
+    }
+  }, [userData]);
 
-    return (
-        console.log('render app'),
-        (
-            <ThemeContext.Provider
-                value={{
-                    ...theme,
-                    // @ts-ignore
-                    setTheme,
-                }}
-            >
-                <UserContext.Provider
-                    // @ts-ignore
-                    value={{ userData, setDataUser }}
-                >
-                    <Header />
-                    <Page>{children}</Page>
-                </UserContext.Provider>
-            </ThemeContext.Provider>
-        )
-    );
+  return (
+    console.log('render app'),
+    (
+      <ThemeContext.Provider
+        value={{
+          ...theme,
+          // @ts-ignore
+          setTheme
+        }}>
+        <UserContext.Provider
+          // @ts-ignore
+          value={{ userData, setDataUser }}>
+          <Header />
+          <Page>{children}</Page>
+        </UserContext.Provider>
+      </ThemeContext.Provider>
+    )
+  );
 };

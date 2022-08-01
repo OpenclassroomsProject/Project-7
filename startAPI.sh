@@ -7,7 +7,7 @@ then
     # cd $path
     echo 'API en cours de démarage ... '
     cd ./API
-
+    npm i 
     npm start
 
 

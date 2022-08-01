@@ -3,11 +3,11 @@
 
 import React, { useEffect } from 'react';
 
-export default function Profil({ title }) {
-    useEffect(() => {
-        document.title = title;
-    }, [title]);
-    return (
+export default function Profil ({ title }) {
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+  return (
         <>
             {/* <Header/> */}
             <main className='flex flex-col items-center p-4'>
@@ -15,5 +15,5 @@ export default function Profil({ title }) {
                 <p>Lorem </p>
             </main>
         </>
-    );
+  );
 }

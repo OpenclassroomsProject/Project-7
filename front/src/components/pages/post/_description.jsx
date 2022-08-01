@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-export default function Description({ edit, children }) {
-    const [clickEditDescription, setclickEditDescription] = useState(false);
+export default function Description ({ edit, children }) {
+  const [clickEditDescription, setclickEditDescription] = useState(false);
 
-    const handleClickDescription = () => {
-        function close(e) {
-            if (!e.target.closest('textarea')) {
-                console.log('close');
-                window.removeEventListener('click', close);
-            }
-        }
-        window.addEventListener('click', close);
-        setclickEditDescription(true);
-    };
-    return (
+  const handleClickDescription = () => {
+    function close (e) {
+      if (!e.target.closest('textarea')) {
+        console.log('close');
+        window.removeEventListener('click', close);
+      }
+    }
+    window.addEventListener('click', close);
+    setclickEditDescription(true);
+  };
+  return (
         <div
             className={` w-full h-full border-secondary-pink  overflow-y-auto relative rounded-lg  ${
                 edit ? 'hover:cursor-pointer' : undefined
@@ -29,5 +29,5 @@ export default function Description({ edit, children }) {
             )}
             <p className={`text-justify h-full ${edit ? '  blur-sm ' : ''}  `}>{children}</p>
         </div>
-    );
+  );
 }

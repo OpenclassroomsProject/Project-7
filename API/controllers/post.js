@@ -1,9 +1,10 @@
 /* eslint-disable semi */
 // const { findByIdAndUpdate } = require('../models/Post.js');
+
 const Post = require('../models/Post.js');
 const objectId = require('mongodb').ObjectId;
 
-exports.create = (req, res) => {
+exports.create = (req, res, next) => {
   console.log("Création d'un post");
 
   const newPost = new Post({ ...req.body });
@@ -12,7 +13,12 @@ exports.create = (req, res) => {
   newPost.createByPseudo = req.pseudo;
   newPost
     .save()
-    .then(() => res.status(201).json({ message: 'Post succeffuly upload !' }))
+    .then(() => {
+      if (req.filename) {
+        next();
+      }
+      res.status(201).json({ message: 'Post succeffuly upload !' });
+    })
     .catch((err) => {
       res.status(400).json({ err });
     });
@@ -79,6 +85,27 @@ exports.delete = (req, res) => {
     res.status(200).json({ ok: true, message: 'Post succesfullly remove !' });
   });
 };
-exports.edit = (req, res) => {
-  console.log('recive edit reauest');
+exports.edit = (req, res, next) => {
+  const postID = req.params.id;
+  const description = req.body.description;
+  const update = {};
+  if (description) {
+    update.description = description;
+    console.log('moddification descritpion');
+  }
+  if (req.filename) {
+    update.imagesUrl = req.filename;
+    console.log('moddification image');
+  }
+  console.log(update);
+  Post.findByIdAndUpdate(postID, update, false, (err, result) => {
+    if (err) res.status(400).json(err);
+    req.post = result;
+    if (req.filename) {
+      next();
+    } else {
+      res.status(200).json({ message: 'Description succesfully update !' });
+    }
+  });
+  // console.log(req.userFolder + '/temp/');
 };

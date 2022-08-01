@@ -18,4 +18,4 @@ Look at the routes file to know all the available routes.
 
 ## Send request 
 
-Send your request on `http://localhost:3000/`.
+Send your request on `http://localhost:8080/`.

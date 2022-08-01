@@ -1,8 +1,9 @@
+/* eslint-disable multiline-ternary */
 import React, { useMemo } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-export default function ImageDelete(props) {
+export default function ImageDelete (props) {
   const { closeIMG, className, edit = false, src, alt } = props;
   const deleteImg = () => {
     alert('are you sure?');
@@ -25,7 +26,7 @@ export default function ImageDelete(props) {
   //   return <></>;
   // }, [children]);
   const Image = useMemo(
-    function Image() {
+    function Image () {
       return <img src={src} alt={alt} className={'h-full'} />;
     },
     [src, alt]
