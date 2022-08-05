@@ -24,7 +24,8 @@ module.exports = (req, res) => {
     console.log('exist');
 
     fs.rename(tmpPath, newPath, function (err) {
-      if (err) throw err;
+      if(err) console.log(err);
+      // if (err) throw err;
       res.status(200).json({message: 'Image succesfully update ! ', imageName: req.filename})
     });
     //file exists

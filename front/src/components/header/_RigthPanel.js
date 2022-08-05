@@ -29,7 +29,7 @@ export default function RightPanel ({ children, visible, unmount }) {
                         margin-right: 0;
                     }
                     100% {
-                        margin-right: -15rem;
+                        margin-right: -20rem;
                     }
                 }
                 .rightPanel {
@@ -38,7 +38,7 @@ export default function RightPanel ({ children, visible, unmount }) {
                 }
                 @keyframes showLogPannel {
                     0%{
-                    margin-right: -15rem;
+                    margin-right: -20rem;
 
                     }
                     100% {
@@ -47,7 +47,7 @@ export default function RightPanel ({ children, visible, unmount }) {
                 }
             `}</style>
       <div
-        className={`hidden ${className} w-60 -mr-80  bg-gray-200 text-black h-screen z-[100] overflow-hidden sm:flex p-auto justify-center `}>
+        className={`hidden ${className} w-80 -mr-80  bg-gray-200 text-black h-screen z-[100] overflow-hidden sm:flex p-auto justify-center `}>
         {children}
       </div>
     </>

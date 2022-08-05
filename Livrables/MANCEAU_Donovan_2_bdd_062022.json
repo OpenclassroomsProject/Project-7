@@ -1,0 +1,35 @@
+[{
+  "_id": {
+    "$oid": "62e57c98924609297234a085"
+  },
+  "description": "Lorem ipsum dolor sit amet. Aut consequatur aspernatur et ullam quia sed sapiente repudiandae est voluptatem eveniet et laboriosam iste quo possimus voluptas. Eos  accusantium eos nihil soluta qui pariatur expedita aut possimus velit! Ut necessitatibus quia aut libero velit aut veniam doloremque est alias commodi eos distinctio molestiae rem eveniet expedita. Et architecto quia est ipsum dolores est odio excepturi eos autem atque et architecto aspernatur vel perspiciatis perspiciatis. Ut cumque quae ut quae nihil qui optio beatae est dolor esse. Et quibusdam dignissimos quo explicabo illo nam reprehenderit laboriosam est neque beatae. Est cupiditate maxime quo Quis dolore et molestiae doloremque est quasi ipsa. ",
+  "imagesUrl": [
+    "1659371852909.jpg"
+  ],
+  "likes": 1,
+  "dislikes": 0,
+  "usersLiked": [
+    "62e18ea7559b7d4ba327d991"
+  ],
+  "usersDisliked": [],
+  "date": "1659206808477",
+  "createBy": "62e18ea7559b7d4ba327d991",
+  "createByPseudo": "Utilisateur",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62e82fefe88360a1259f9e54"
+  },
+  "description": "Ceci est le post de l'admin",
+  "imagesUrl": [
+    null
+  ],
+  "likes": 0,
+  "dislikes": 0,
+  "usersLiked": [],
+  "usersDisliked": [],
+  "date": "1659383791677",
+  "createBy": "62e80219d0455f9f06973aee",
+  "createByPseudo": "Admin",
+  "__v": 0
+}]

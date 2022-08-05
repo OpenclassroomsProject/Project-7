@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "62e18ea7559b7d4ba327d991"
+  },
+  "email": "donovan.manceau@hotmail.com",
+  "password": "$2b$10$ek0VwDVPbL9C5uMDWh3nreb23SwFAy9wiec4U8eIZwcs6EK8rqo8K",
+  "pseudo": "Utilisateur",
+  "avatar": "default.png",
+  "admin": false,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "62e80219d0455f9f06973aee"
+  },
+  "email": "admin@admin",
+  "password": "$2b$10$bHKjhVVT3B8TordZ1jEDKeS0tFgnsBkt5ZT5vT8jf48TdZLXet5zW",
+  "pseudo": "Admin",
+  "avatar": "default.png",
+  "admin": true,
+  "__v": 0
+}]

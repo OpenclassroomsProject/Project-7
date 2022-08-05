@@ -7,6 +7,10 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import Page from './components/templates/_page';
 import { ThemeContext } from './pages/profil/Setting';
 
+// import Login from './pages/auth/login';
+import AuthForm from './components/header/_AuthForm';
+
+
 export const UserContext = createContext(false);
 // const theme = {
 //     'dark',
@@ -51,15 +55,13 @@ export const App = ({ children }) => {
           // @ts-ignore
           toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar, user.admin);
         });
-    } else {
-      // setDataUser(false);
     }
   }, [userData]);
 
-  return (
-    console.log('render app'),
-    (
-      <ThemeContext.Provider
+    return (
+      console.log('render app'),
+      (
+        <ThemeContext.Provider
         value={{
           ...theme,
           // @ts-ignore
@@ -69,9 +71,11 @@ export const App = ({ children }) => {
           // @ts-ignore
           value={{ userData, setDataUser }}>
           <Header />
-          <Page>{children}</Page>
+
+          <Page>{userData? children : <AuthForm type={'Login'}/>}</Page>
+
         </UserContext.Provider>
       </ThemeContext.Provider>
     )
-  );
+    );
 };

@@ -15,7 +15,7 @@ exports.create = (req, res, next) => {
     .save()
     .then(() => {
       if (req.filename) {
-        next();
+       return next();
       }
       res.status(201).json({ message: 'Post succeffuly upload !' });
     })
@@ -98,6 +98,7 @@ exports.edit = (req, res, next) => {
     console.log('moddification image');
   }
   console.log(update);
+
   Post.findByIdAndUpdate(postID, update, false, (err, result) => {
     if (err) res.status(400).json(err);
     req.post = result;
@@ -107,5 +108,4 @@ exports.edit = (req, res, next) => {
       res.status(200).json({ message: 'Description succesfully update !' });
     }
   });
-  // console.log(req.userFolder + '/temp/');
 };
