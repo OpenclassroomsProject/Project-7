@@ -44,15 +44,17 @@ const NavConnected = ({userContext}) => {
     return (
         // ========================================== Nav top  =================================================
       <>
-        <Logo className={'hidden sm:flex w-min min-w-[30%] sm:mr-auto'}/>
+        <Logo className={'hidden sm:flex w-min min-w-fit'}/>
         {/*=============== Nav top desktop ================*/}
         <ButtonNotif className='flex sm:hidden border-[#e5e7eb] border-2'/>
         {/*=================      Search bar     ================*/}
-        <div className="flex items-center justify-center h-full max-w-[60%] w-full sm:max-w-[30%]">
+        <div className="flex items-center justify-center h-full max-w-[60%] w-full sm:max-w-[25%]">
           <FontAwesomeIcon icon={faSearch} className='relative  left-6'/>
           <input type="text absolute" className="bg-[#CBD5E1] bg-opacity-30 h-full p-1 w-full px-8"></input>
         </div>
         {/*=================    End search bar   ================*/}
+        <div className="flex">
+
           <Link to="/" className={style.button + 'hidden'}>
             <FontAwesomeIcon className={style.iconButton} icon={faHouseChimney} height="100%" width="100%" />
           </Link>
@@ -83,6 +85,7 @@ const NavConnected = ({userContext}) => {
             </DynamiqueTagProfilPicture>
           {/* ============= End Preview Picture ============= */}
 
+        </div>
 
 
 

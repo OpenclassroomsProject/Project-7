@@ -58,19 +58,22 @@ export default function NavDynamique(){
         }
         return  (
         <>
-            <Logo className={'sm:p-3'}/>
-            <Button to='Login'>Login</Button>
-            <Button to="SignIn" className='border'>SignIn</Button>
+            <Logo className={' h-full w-[50%] sm:p-3'}/>
+            <div>
+              <Button to='Login'>Login</Button>
+              <Button to="SignIn" className='border'>SignIn</Button>
+            </div>
         </>)
     }
 
-    return (
-        <nav className="flex items-center h-full w-full justify-between flex-row-reverse sm:flex-row  ">
+    return (<> 
+        <nav className="flex items-center h-full w-full justify-between ">
             {userContext.userData?
                 <NavConnected userContext={userContext}/>
             :
                 <NavVisitors/>
             }
         </nav>
+        </>
     )
 }
