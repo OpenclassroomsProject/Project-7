@@ -7,14 +7,22 @@ import './index.css';
 import { App } from './App';
 
 import Home from './pages/Home';
-import CreatePost from './pages/post/Create';
+
+import SingIn from './pages/auth/SignIn';
+import Login from './pages/auth/Login';
+
+
 import Profil from './pages/profil/Profil';
-import Setting from './pages/profil/Setting';
+import Options from './pages/profil/Options';
+import Setting from './pages/profil/Settings';
+
+import CreatePost from './pages/post/Create';
+
 import GetPost from './pages/post/[id]';
 import EditPost from './pages/post/Edit';
-import SingIn from './pages/auth/signIn';
-import Login from './pages/auth/login';
-import Messaging from './pages/messaging/Messaging';
+
+
+import Messaging from './pages/messaging/_Messaging';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -26,11 +34,12 @@ root.render(
         <Routes>
           <Route path="/header" />
           <Route path="/" element={<Home title={'Accueil'} />} />
-          <Route path="/SignIn" element={<SingIn />} />
-          <Route path="/Login" element={<Login />} />
+          <Route exact path="/SignIn" element={<SingIn />} />
+          <Route exact path="/Login" element={<Login />} />
           <Route path="/messagerie" element={<Messaging />} />
           {/* <Route path='/profil' element={<Profil title={'Profil xxxxx '} />} /> */}
           <Route path="/profil/:id" element={<Profil title={'Profil xxxxx '} />} />
+          <Route path="/profil/options" element={<Options />} />
           <Route path="/profil/settings" element={<Setting />} />
           <Route path="/post/create" element={<CreatePost title={"Création d'un Post"} />} />
           <Route path="/post/edit/:id" element={<

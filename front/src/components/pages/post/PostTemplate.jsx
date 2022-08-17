@@ -37,9 +37,6 @@ function PostTemplate ({
   // eslint-disable-next-line camelcase
   const ref_description = useRef();
   const userContext = useContext(UserContext);
-  console.log(userContext);
-  // @ts-ignore
-
   const headerFetch = addHeaderJWT();
   const [Unmount, setUnmount] = useState(false);
 
@@ -69,7 +66,6 @@ function PostTemplate ({
   useEffect(() => {
     // @ts-ignore
     if (userContext.userData.id === createBy || userContext.userData.admin) {
-      console.log(userContext);
       setAdmin(true);
     } else {
       if (admin) setAdmin(false);
@@ -148,7 +144,7 @@ function PostTemplate ({
   return (
     <>
       <section
-        className={'relative bg-white flex flex-col mb-2  text-[#5d5c5c]  sm:rounded-xl sm:w-[500px] '}
+        className={'relative bg-white flex flex-col mb-2  text-[#5d5c5c]  sm:rounded-xl sm:w-[500px] border border-black border-opacity-[10%] '}
         id={_id}
         key={_id}>
         <div>

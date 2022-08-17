@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default function Page ({ children, theme = undefined }) {
+export default function Page ({ children, theme = undefined , className}) {
   return (
-    <div className={`  bg-[#d7d3ce] min-h-[calc(100vh-3rem)]  ${theme || ''}  `}>
+    <div className={`  bg-[#f3f2ef]  ${className}  `}>
       {children}
       {/* <div className='body'>{children}</div> */}
     </div>

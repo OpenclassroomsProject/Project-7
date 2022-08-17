@@ -1,13 +1,21 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext , useEffect } from 'react';
 import themeDark from '../../components/pages/setting/_themeDark';
 import themeLight from '../../components/pages/setting/_themeLight';
 import themeRed from '../../components/pages/setting/_themeRed';
+import{ logOut} from '../../components/header/auth/_logout';
+import { UserContext } from '../../App';
 
 export const ThemeContext = createContext({ themeName: 'light', ...themeLight, setTheme: undefined });
+    ThemeContext.displayName='Theme'
 
 export default function Setting () {
   const themeContext = useContext(ThemeContext);
-  console.log(themeContext);
+  const userContext = useContext(UserContext)
+  // console.log(themeContext);
+  useEffect(()=>{
+    console.log('ici');
+
+  },[])
   let theme = {};
   const switchTheme = (/** @type {{ target: { value: any; }; }} */ e) => {
     theme.themeName = e.target.value;
@@ -53,6 +61,9 @@ export default function Setting () {
                     <option value='red'>Red</option>
                 </select>
             </div>
+            <button onClick={()=>{logOut(userContext)}}>
+              Déconexion
+            </button>
         </>
   );
 }
