@@ -11,11 +11,11 @@ body {
   font-family: 'Lato', sans-serif;
   font-weight: 400;
 
-  /* overflow: hidden; */
+  overflow: hidden;
 }
-#root {
+/* #root {
   overflow-x: hidden;
-}
+} */
 
 /* .page {
     @apply h-[calc(100vh-6.5rem)] m-auto sm:h-auto p-[4vw] sm:p-10;

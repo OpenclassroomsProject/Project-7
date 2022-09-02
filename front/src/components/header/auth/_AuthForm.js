@@ -120,7 +120,7 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
     };
 
     // @ts-ignore
-    fetch(server + 'api/auth/' + Action, myInit)
+    fetch(server + '/api/auth/' + Action, myInit)
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -132,12 +132,16 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
         if(closeLogPanel != null){
           closeLogPanel();
         }
+        console.log(data);
+    const Avatar = '/images/' + (data.avatar === "default.png"? "default.png": data.userId+'/asset/'+data.avatar);
+
         // @ts-ignore
         userContext.setDataUser({
           jwt: data.JWT,
           id: data.userId,
           pseudo: data.pseudo,
-          avatar: data.avatar,
+          Avatar: Avatar,
+          friends: data.friends,
           admin: data.admin
         });
         // setUserConnected(data.JWT, data._id, data.pseudo, data.avatar);

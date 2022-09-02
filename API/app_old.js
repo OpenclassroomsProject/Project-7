@@ -55,11 +55,13 @@ app.use(express.json());
 
 const bodyParser = require('body-parser');
 
+
 //==================== Routes =======================
 app.use('/api/auth', UserRoutes);
-// app.use('/api/sauces', saucesRoutes);
 app.use('/api/post/', postRoutes);
 app.use('/api/profil/', profilRoutes);
 app.use('/images', express.static(__dirname + '/images'));
+
+
 
 module.exports = app;

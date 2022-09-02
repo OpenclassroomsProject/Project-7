@@ -10,6 +10,7 @@ const move_temp_files = require('./../middleware/move_temp_file');
 const valid_Id = require('../middleware/valid_Id');
 
 router.get('/', postCrtl.getAll);
+router.get('/getAllByUserId/:id',auth,valid_Id, postCrtl.getAllPostByUserId);
 router.get('/:id', auth, valid_Id, postCrtl.getById);
 router.get('/like/:id', auth, valid_Id, postCrtl.like);
 router.delete('/delete/:id', auth, valid_Id, postCrtl.delete);

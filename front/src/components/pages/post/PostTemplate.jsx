@@ -32,7 +32,8 @@ function PostTemplate ({
   imagesUrl,
   date,
   likes,
-  usersLiked
+  usersLiked,
+  avatar
 }) {
   // eslint-disable-next-line camelcase
   const ref_description = useRef();
@@ -98,7 +99,7 @@ function PostTemplate ({
     // eslint-disable-next-line default-case
     const action = like ? 'like' : 'dislike';
 
-    return fetch(server + 'api/post/' + action + '/' + _id, {
+    return fetch(server + '/api/post/' + action + '/' + _id, {
       headers: headerFetch
     });
   };
@@ -133,7 +134,7 @@ function PostTemplate ({
   };
   const handleClickDeletePost = () => {
     console.log('Suppression en cours ... ');
-    fetch(server + 'api/post/delete/' + _id, { headers: headerFetch, method: 'delete' }).then(
+    fetch(server + '/api/post/delete/' + _id, { headers: headerFetch, method: 'delete' }).then(
       (res) => {
         if (!res.ok) return false;
         setUnmount(true);
@@ -144,16 +145,15 @@ function PostTemplate ({
   return (
     <>
       <section
-        className={'relative bg-white flex flex-col mb-2  text-[#5d5c5c]  sm:rounded-xl sm:w-[500px] border border-black border-opacity-[10%] '}
-        id={_id}
-        key={_id}>
+        className={'relative w-full bg-white flex flex-col mb-2  text-[#5d5c5c]  sm:rounded-xl sm:w-[500px] border-y sm:border border-black border-opacity-[10%] '}
+        id={_id}>
         <div>
           <div className=" relative pt-3 pl-4 pr-4 text-base">
             <div className="flex items-center ">
               <Link to={'/profil/' + createBy}>
                 <img
                   className=" h-10 w-10 mr-2 rounded-full"
-                  src="https://media-exp1.licdn.com/dms/image/C4E22AQGYKtm-Dhi1aA/feedshare-shrink_800/0/1658424335481?e=1661990400&v=beta&t=pKYu09XEQppk-vsKaj9Ch1m1maya7m0SasWRafRUbOg"
+                  src={server+avatar}
                   alt="member profil"></img>
               </Link>
               <div className="mr-auto">
@@ -185,9 +185,9 @@ function PostTemplate ({
               false
             )}
             {/* ====================================================   Descritpion   ==================================================== */}
-            <Link to={clickEdit ? '/' : '/post/' + _id} className="  ">
+            {/* <Link to={clickEdit ? '/' : '/post/' + _id} className="  "> */}
+            <Link to={'/post/' + _id} className="">
               <p
-                // eslint-disable-next-line camelcase
                 ref={ref_description}
                 className={`relative overflow-hidden text-left text-sm mt-4 mb-2  ${
                   !openDescritpion && 'max-h-16  '
@@ -208,7 +208,7 @@ function PostTemplate ({
         </button>
 
         {clickOption ? (
-          <div className="absolute bg-white  z-10  right-0 top-14 flex   flex-col shadow-2xl items-start  font-semibold pt-2 pb-2 border-[1px] ">
+          <div className="absolute bg-white  z-10  right-0 top-14 flex   flex-col shadow-2xl items-start  font-semibold pt-2 pb-2 border ">
             {admin ? (
               <>
                 <button
@@ -269,15 +269,15 @@ function PostTemplate ({
 
         {imagesUrl[0] ? (
           <img
-            className="border-b-[1px]"
-            src={server + 'images/' + createBy + '/' + image}
+            className=""
+            src={server + '/images/' + createBy + '/' + image}
             alt="post"></img>
         ) : (
           false
         )}
 
         {/* ============= module like / share/ coments ============= */}
-        <div className="flex justify-between items-center pl-4 pr-4 h-8 border-w-1 border-#f2f2f2 border-b-[1px]  text-xs text-[#aaa] ">
+        <div className="flex justify-between items-center pl-4 pr-4 h-8 border-y sm:border border-#f2f2f2 text-xs text-[#aaa] ">
           <div className="flex">
             <div className=" bg-blue-500 rounded-full flex h-fit mr-1 mt-auto mb-auto">
               <FontAwesomeIcon
@@ -301,9 +301,9 @@ function PostTemplate ({
               onClick={handleClicklike}
             />
           </button>
-          <button className="flex justify-center">
+          <button className="flex">
             {/* <FontAwesomeIcon className='h-5 text-[#666]' icon={faCommentDots} /> */}
-            <svg viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" className="">
+            <svg viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" className="h-full w-full">
               <path d="M7 9h10v1H7zm0 4h7v-1H7zm16-2a6.78 6.78 0 01-2.84 5.61L12 22v-4H8A7 7 0 018 4h8a7 7 0 017 7zm-2 0a5 5 0 00-5-5H8a5 5 0 000 10h6v2.28L19 15a4.79 4.79 0 002-4z"></path>
             </svg>
           </button>

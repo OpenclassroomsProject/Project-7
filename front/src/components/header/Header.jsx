@@ -11,20 +11,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGear, faHouseChimney} from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 
-import React, { useState, useContext, useEffect} from 'react';
-import {  UserContext, ResponsiveContext } from '../../App';
+import React, { useState, useContext, useEffect, memo} from 'react';
+import {  UserContext } from '../../App';
 import { ThemeContext } from '../../pages/profil/Settings';
 // import NavConnected from './_NavConnected';
 import NavDynamique from './_NavDynamique';
+// import { useMemo } from 'react';
 
 
-const Header = function ({className}) {
+export function Header ({className}) {
   // const responsiveContext = useContext(ResponsiveContext)
 
   const themeContext = useContext(ThemeContext);
   const userContext = useContext(UserContext);
 
   const [pageActive, setPageActive] = useState(false);
+  // const HeaderTop = useMemo(function HeaderTop(){
+  //   return <NavDynamique />
+  // },[])
 
   useEffect(() => {
     switch (window.location.pathname) {
@@ -153,27 +157,12 @@ const Header = function ({className}) {
  
   const class_buttonMobile = 'cursor-pointer w-10 h-10  flex justify-center items-center';
 
-  return (
-    (
+  return (console.log('render header'),
       <header
       // ${themeContext.header.fontColor } 
         className={`flex justify-between  shadow-xl px-3 py-2 w-screen border-b border-black border-opacity-[15%] ${className} ${!userContext.userData? 'py-4 sm:py-0':' '}`}>
-        <NavDynamique />
+        <NavDynamique/>
         {/* =================== AuthPanel ===================== */}
-        {/* {logPanel != null
-          ? (
-          <RightPanel visible={!!logPanel} unmount={setLogPanel}>
-            <AuthForm
-              type={logPanel.formType ? logPanel.formType : false}
-              closeLogPanel={() => {
-                setLogPanel(false);
-              }}
-            />
-          </RightPanel>
-            )
-          : (
-              ''
-            )} */}
         {/* ============================ End Nav Header Top ============================= */}
         {/* ============================ Nav mobile bottom ============================== */}
         {userContext.userData?
@@ -193,14 +182,10 @@ const Header = function ({className}) {
 
             <Link
               to={
-                // @ts-ignore
                 !userContext.userData
                   ? '/login'
-                  : '/profil/' +
-                    // @ts-ignore
-                    userContext.userData.id
+                  : '/profil/'
               }
-              // @ts-ignore
               className={`${class_buttonMobile} ${pageActive.profil && 'text-black'}`}
               onClick={() => {
                 // @ts-ignore
@@ -262,8 +247,7 @@ const Header = function ({className}) {
          :false}
         {/* ============================== End nav mobile  ============================== */}
       </header>
-    )
   );
 };
 
-export default Header;
+// export const HeaderMemo = React.memo(Header);

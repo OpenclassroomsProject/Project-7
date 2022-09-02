@@ -1,5 +1,5 @@
 const http = require('http');
-const app = require('./app');
+const app = require('./app_old');
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
@@ -12,8 +12,6 @@ const normalizePort = (val) => {
   }
   return false;
 };
-const port = normalizePort(process.env.PORT || '8080');
-app.set('port', port);
 
 const errorHandler = (error) => {
   if (error.syscall !== 'listen') {
@@ -34,9 +32,6 @@ const errorHandler = (error) => {
       throw error;
   }
 };
-
-const server = http.createServer(app);
-
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
@@ -45,6 +40,7 @@ server.on('listening', () => {
   console.log('Listening on ' + bind);
 });
 
+// app.listen(port)
 server.listen(port);
 
 

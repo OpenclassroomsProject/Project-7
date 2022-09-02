@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 export default function CreatePost ({ title }) {
   const [postIsValid, setPostIsValid] = useState(false);
   // @ts-ignore
-  const { userData } = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const textArea = useRef();
   useEffect(() => {
@@ -36,9 +36,12 @@ export default function CreatePost ({ title }) {
   };
   // @ts-ignore
   const uploadToServer = async (event) => {
+    console.log('ipload post');
     if (!postIsValid) return false;
     // @ts-ignore
     if (!textArea.current.value) return false;
+    console.log('success');
+
 
     // @ts-ignore
     // const textArea = document.getElementById('textArea').value;
@@ -61,9 +64,9 @@ export default function CreatePost ({ title }) {
       window.location.href = '/';
     });
   };
-  const avatarURI = `${server}images/${
-    userData.avatar === 'default.png' ? userData.avatar : userData.id + '/' + userData.avatar
-  }`;
+
+  if(! userContext.userData) return false
+  console.log(userContext.userData);
   return (
     <main className="absolute h-screen top-0 right-0 w-screen bg-white z-50 flex flex-col ">
       <nav className="flex items-center h-12 border-b-[1px]">
@@ -79,53 +82,55 @@ export default function CreatePost ({ title }) {
           Publier
         </button>
       </nav>
-      <div className="p-4 flex flex-col  border-b-[1px]">
-        <div className="flex flex-row mb-4">
-          <img src={avatarURI} className="rounded-full h-10 w-10 mr-4" alt="profil"></img>
-          <div>
-            <span> {userData.pseudo}</span>
+      <form>      
+        <div className="p-4 flex flex-col  border-b-[1px]">
+          <div className="flex flex-row mb-4">
+            <img src={server+userContext.userData.Avatar} className="rounded-full h-10 w-10 mr-4" alt="profil"></img>
+            <div>
+              <span> {userContext.userData.pseudo}</span>
+            </div>
           </div>
+          <textarea
+            className=" p-1 focus:outline-none placeholder:text-gray-500 "
+            placeholder={'Partager un post avec ou sans photos.'}
+            ref={textArea}
+            onChange={(e) => {
+              if (e.target.value) {
+                if (!postIsValid) setPostIsValid(true);
+                console.log(e.target.value);
+              } else {
+                setPostIsValid(false);
+              }
+            }}></textarea>
         </div>
-        <textarea
-          className=" p-1 focus:outline-none placeholder:text-gray-500 "
-          placeholder={'Partager un post avec ou sans photos.'}
-          ref={textArea}
-          onChange={(e) => {
-            if (e.target.value) {
-              if (!postIsValid) setPostIsValid(true);
-              console.log(e.target.value);
-            } else {
-              setPostIsValid(false);
-            }
-          }}></textarea>
-      </div>
-      <button
-        className="p-4 cursor-pointer"
-        onClick={() => {
-          fileRef.current.click();
-        }}>
-        <svg viewBox="0 0 24 24" data-supported-dps="24x24" className="icon fill-gray-600 h-6 w-6 ">
-          <path d="M16 13a4 4 0 11-4-4 4 4 0 014 4zm6-4v11H2V9a3 3 0 013-3h1.3l1.2-3h9l1.2 3H19a3 3 0 013 3zm-5 4a5 5 0 10-5 5 5 5 0 005-5z"></path>
-        </svg>
-      </button>
-      <input type="file" className={'w-0'} ref={fileRef} onChange={uploadToClient}></input>
-      {image
-        ? (
-        <div className=" max-h-24 h-full">
-          <ImageDelete
-            className="flex p-2 "
-            edit
-            src={createObjectURL}
-            closeIMG={() => {
-              setCreateObjectURL(false);
-              setImage(false);
-            }}
-          />
-        </div>
-          )
-        : (
-            false
-          )}
+        <button
+          className="p-4 cursor-pointer"
+          onClick={() => {
+            fileRef.current.click();
+          }}>
+          <svg viewBox="0 0 24 24" data-supported-dps="24x24" className="icon fill-gray-600 h-6 w-6 ">
+            <path d="M16 13a4 4 0 11-4-4 4 4 0 014 4zm6-4v11H2V9a3 3 0 013-3h1.3l1.2-3h9l1.2 3H19a3 3 0 013 3zm-5 4a5 5 0 10-5 5 5 5 0 005-5z"></path>
+          </svg>
+        </button>
+        <input type="file" className={'w-0'} ref={fileRef} onChange={uploadToClient} ></input>
+        {image
+          ? (
+          <div className=" max-h-24 h-full">
+            <ImageDelete
+              className="flex p-2 "
+              edit
+              src={createObjectURL}
+              closeIMG={() => {
+                setCreateObjectURL(false);
+                setImage(false);
+              }}
+            />
+          </div>
+            )
+          : (
+              false
+            )}
+      </form>
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import {  UserContext } from '../../App';
@@ -67,9 +67,9 @@ export default function NavDynamique(){
     }
 
     return (<> 
-        <nav className="flex items-center h-full w-full justify-between ">
+        <nav className="flex flex-row-reverse sm:flex-row items-center h-full w-full justify-between ">
             {userContext.userData?
-                <NavConnected userContext={userContext}/>
+                  <NavConnected userContext={userContext}/>
             :
                 <NavVisitors/>
             }

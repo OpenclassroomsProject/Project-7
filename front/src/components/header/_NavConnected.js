@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import { Link } from "react-router-dom";
 import { ResponsiveContext } from "../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,16 +22,28 @@ const NavConnected = ({userContext}) => {
       iconButton: 'p-2'
     };
 
-    const DynamiqueTagProfilPicture = ({children, className, onClick})=>{
-      if( responsiveContext.state && responsiveContext.state.mobile ) {
-        return <Link to="/profil/options" className={className}>
-                {children}
-              </Link>
-      }
-      return <button className={className} onClick={onClick}>
-        {children}
-      </button>
-    }
+    // const DynamiqueTagProfilPicture = ({children, className, onClick})=>{
+
+    //   // if( responsiveContext.state && responsiveContext.state.mobile ) {
+    //   //   return <Link to="/profil/options" className={className}>
+    //   //           {children}
+    //   //         </Link>
+    //   // }
+    //   return <button className={className} onClick={onClick}>
+    //     {children}
+    //   </button>
+    // }
+    // const srcPicture = ;
+    // const ProfilPicture = useMemo(function (){
+    //   return <img
+    //   src={srcPicture}
+   
+    //   />
+    // },[srcPicture])
+    const ProfilPicture = memo(function ProfilPicture({ src }) {
+      return <img src={src} className="rounded-full h-full"   height={'100%'}
+      alt="user profil" />;
+    });
     const ButtonNotif = ({className})=>{
       return <button
               className={`${
@@ -41,10 +53,15 @@ const NavConnected = ({userContext}) => {
               <FontAwesomeIcon className={style.iconButton} icon={faBell} height="100%" />
             </button>
     }
+
+    const url = window.location.origin.split(':')
+    // console.log(userContext);
+    const urlAvatar = url[0]+':'+url[1]+":3001"+userContext.userData.Avatar
+
     return (
         // ========================================== Nav top  =================================================
       <>
-        <Logo className={'hidden sm:flex w-min min-w-fit'}/>
+        <Logo className={'hidden sm:flex sm:w-52 '}/>
         {/*=============== Nav top desktop ================*/}
         <ButtonNotif className='flex sm:hidden border-[#e5e7eb] border-2'/>
         {/*=================      Search bar     ================*/}
@@ -65,7 +82,7 @@ const NavConnected = ({userContext}) => {
 
 
           {/*================ Preview Picture ================*/}
-            <DynamiqueTagProfilPicture
+            <button
               className={` flex sm:w-24  items-center justify-between  ${
                 ClickProfil ? style.buttonPush : style.button + style.buttonHover
               } `}
@@ -74,15 +91,10 @@ const NavConnected = ({userContext}) => {
                 return setClickProfil(!ClickProfil)}}
                 >
               <div className={'h-full w-full sm:w-[40%] p-[1px] sm:p-1'}>
-                <img
-                  className="rounded-full h-full"
-                  src="/code.jpg"
-                  height={'100%'}
-                  alt="user profil"
-                  />
+               <ProfilPicture src={urlAvatar}/>
               </div>
               <div className="mr-auto hidden sm:block">Profil</div>
-            </DynamiqueTagProfilPicture>
+            </button>
           {/* ============= End Preview Picture ============= */}
 
         </div>
@@ -92,7 +104,7 @@ const NavConnected = ({userContext}) => {
         
         {/* ================ OTION WHEN CLICK PROFIL ON DESKTOP ================*/}
           {ClickProfil ? (
-            <div className=" hidden sm:flex absolute bg-white w-60 h-28 top-16 right-10 rounded   flex-col  shadow-2xl z-10">
+            <div className=" hidden sm:flex absolute bg-white w-60 h-28 top-16 right-10 rounded   flex-col  shadow-2xl z-10 border border-black border-opacity-[15%]">
               <div className="w-full  h-full flex justify-around items-center ">
                 {/* <div className="flex"> */}
                 <Link to='/post/create' className={`${style.button} ${style.buttonHover} `}>

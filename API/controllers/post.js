@@ -1,12 +1,11 @@
 /* eslint-disable semi */
 // const { findByIdAndUpdate } = require('../models/Post.js');
-
 const Post = require('../models/Post.js');
+const User = require('../models/User.js');
 const objectId = require('mongodb').ObjectId;
 
 exports.create = (req, res, next) => {
-  console.log("Création d'un post");
-
+  // console.log("Création d'un post");
   const newPost = new Post({ ...req.body });
   newPost.imagesUrl.push(req.filename);
   newPost.createBy = req._id;
@@ -25,18 +24,13 @@ exports.create = (req, res, next) => {
 };
 
 exports.getAll = (req, res) => {
-  const id = req._id || 'visitor';
-  console.log('Receive request get all post by => ' + id);
+  const allPost = Post.find().sort({ date: -1 }).limit(20);
 
-  const allPost = Post.find({ published: true }).sort({ date: -1 }).limit(20);
-  allPost.exec(function (err, posts) {
-    if (err) return console.log(err);
-    res.status(200).json(posts);
-  });
+  ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(allPost, res)
 };
 
 exports.getById = (req, res) => {
-  console.log('Request get post by _id receive by => ' + req._id);
+  // console.log('Request get post by _id receive by => ' + req._id);
 
   if (!objectId.isValid(req.params.id)) {
     return res.status(400).json({ error: 'Invalide id !' });
@@ -52,7 +46,7 @@ exports.like = (req, res) => {
   const postId = req.params.id;
   //   console.log(req);
   Post.findById(postId, (err, data) => {
-    console.log('Request post like receiver by => ' + req._id);
+    // console.log('Request post like receiver by => ' + req._id);
 
     if (err) return res.status(500).json(err);
     // eslint-disable-next-line prefer-const
@@ -79,7 +73,7 @@ exports.like = (req, res) => {
   });
 };
 exports.delete = (req, res) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   Post.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(200).json(err);
     res.status(200).json({ ok: true, message: 'Post succesfullly remove !' });
@@ -91,13 +85,13 @@ exports.edit = (req, res, next) => {
   const update = {};
   if (description) {
     update.description = description;
-    console.log('moddification descritpion');
+    // console.log('moddification descritpion');
   }
   if (req.filename) {
     update.imagesUrl = req.filename;
-    console.log('moddification image');
+    // console.log('moddification image');
   }
-  console.log(update);
+  // console.log(update);
 
   Post.findByIdAndUpdate(postID, update, false, (err, result) => {
     if (err) res.status(400).json(err);
@@ -109,3 +103,35 @@ exports.edit = (req, res, next) => {
     }
   });
 };
+
+exports.getAllPostByUserId = (req,res)=>{
+  const allPost = Post.find({createBy:req.params.id}).sort({ date: -1 }).limit(20);
+  ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(allPost, res)
+  // Post.find({createBy:req.params.id}, ( err,data)=>{
+  // })
+  
+}
+function ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(find, res){
+  find.exec((err,data)=>{
+    if(data.length === 0) return res.status(200).json(false)
+
+    let Post = [];  
+    const maxForeach = data.length;
+
+    data.forEach((element, index) => {
+
+      User.findById(element.createBy)
+        .then(FindUser=>{ 
+          if(!FindUser) return res.status(405).json()
+          const pathAvatar = FindUser.avatar === 'default.png' ? 'default.png' : element.createBy+'/'+FindUser.avatar;
+          let tmp = {...element}
+              tmp._doc.avatar = '/images/' +pathAvatar;
+      
+          Post.push(tmp._doc)
+          
+          if(Post.length === maxForeach) return res.status(200).json(Post)
+        })
+      });
+  })
+}
+

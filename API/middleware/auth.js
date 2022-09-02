@@ -14,12 +14,14 @@ module.exports = (req, res, next) => {
       throw 'User ID non valable !';
     } else {
       req._id = userId;
-      console.log(decodeToken);
+      // console.log(decodeToken);
       // @ts-ignore
       req.pseudo = decodeToken.pseudo;
       req.userFolder = path.join(__dirname, `./../images/${userId}`);
       // @ts-ignore
       req.avatar = decodeToken.avatar;
+      req.bannerProfil = decodeToken.bannerProfil;
+      req.friends = decodeToken.friends
       // @ts-ignore
       req.admin = decodeToken.admin || false;
       next();

@@ -4,7 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './index.css';
-import { App } from './App';
+import { App  } from './App';
 
 import Home from './pages/Home';
 
@@ -38,6 +38,8 @@ root.render(
           <Route exact path="/Login" element={<Login />} />
           <Route path="/messagerie" element={<Messaging />} />
           {/* <Route path='/profil' element={<Profil title={'Profil xxxxx '} />} /> */}
+          <Route path="/profil/" element={<Profil refresh title={'Mon Profil'} />} />
+          <Route path="/profil/edit" element={<Profil edit title={'Editer mon profil '} />} />
           <Route path="/profil/:id" element={<Profil title={'Profil xxxxx '} />} />
           <Route path="/profil/options" element={<Options />} />
           <Route path="/profil/settings" element={<Setting />} />

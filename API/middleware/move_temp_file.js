@@ -4,7 +4,7 @@
 const fs = require('fs');
 
 module.exports = (req, res) => {
-  const newPath = req.userFolder + '/' + req.filename;
+  const newPath = req.userFolder + '/asset/' + req.file.filename
   const tmpPath = req.userFolder + '/tmp/' + req.filename;
   // if () {
 
@@ -17,11 +17,9 @@ module.exports = (req, res) => {
 
   // @ts-ignore
   fs.access(tmpPath, fs.F_OK, (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log('exist');
+    if (err) return console.error(err);
+
+    console.log('file exist in tmp file');
 
     fs.rename(tmpPath, newPath, function (err) {
       if(err) console.log(err);

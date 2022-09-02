@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     pseudo: { type: String, default: 'Utilisateur' },
     avatar: { type: String, default: 'default.png' },
+    bannerProfil :{type:String , default:false},
+    job:{type:String , default:false},
+    localisation:{type:String , default:false},
+    friends : {type: [String] },
     admin: { type: Boolean, default: false },
 });
 

@@ -10,7 +10,7 @@ module.exports = {
         'sm': '600px',
         'tablet': '840px',
         'desktop': '1024px'
-      },
+      }
     },
   },
   plugins: [],
