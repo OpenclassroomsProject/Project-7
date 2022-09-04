@@ -19,6 +19,8 @@ export const  UserContext = createContext(false);
               UserContext.displayName='User'
 export const  ResponsiveContext = createContext({state:null, witdh:{mobile:600}})
               ResponsiveContext.displayName='Responsive';
+export const  CacheContext = createContext({home:null});
+              CacheContext.displayName='Cache'
 
 
 // const theme = {
@@ -33,10 +35,12 @@ export const App = ({ children }) => {
   const [theme, setTheme] = useState(useContext(ThemeContext));
   const [responsive, setResponsive] = useState(useContext(ResponsiveContext))
   const [userData, setDataUser] = useState(null);
+  const [cache, setCache] = useState(useContext(CacheContext));
   let  Navigate = useNavigate()
+
   
 
-  const toggleConnect = (JWT = false, id = false, pseudo = false, avatar = false, admin = false,friends=false) => {
+  const toggleConnect = (JWT = false, id = false, pseudo = false, avatar = false, admin = false,followedUser=false) => {
     const Avatar = '/images/' + (avatar === "default.png"? "default.png": id+'/asset/'+avatar);
     
     const Obj = !JWT
@@ -46,7 +50,7 @@ export const App = ({ children }) => {
           id,
           pseudo,
           Avatar,
-          friends,
+          followedUser,
           admin
         };
     // @ts-ignore
@@ -90,7 +94,7 @@ export const App = ({ children }) => {
         })
         .then((user) => {
           if(user){
-            toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar, user.admin,user.friends);
+            toggleConnect(localStorage.getItem('JWT'), user._id, user.pseudo, user.avatar, user.admin,user.followedUser);
           }else{
             localStorage.clear()
             setDataUser(false)
@@ -145,11 +149,14 @@ export const App = ({ children }) => {
           <UserContext.Provider
             // @ts-ignore
             value={{ userData, setDataUser }}>
+
             <Header/>
             {/* <Header  className={style.header.height}/> */}
-            <Page className={`h-screen overflow-scroll`}>
-              { children}
-            </Page>
+            <CacheContext.Provider value={{...cache, updateCache : setCache}}>
+              <Page className={`h-screen overflow-scroll`}>
+                { children}
+              </Page>
+            </CacheContext.Provider>
 
           </UserContext.Provider>
         </ThemeContext.Provider>

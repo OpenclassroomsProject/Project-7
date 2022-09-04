@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     bannerProfil :{type:String , default:false},
     job:{type:String , default:false},
     localisation:{type:String , default:false},
-    friends : {type: [String] },
+    followedUser: {type: [String] },
     admin: { type: Boolean, default: false },
 });
 

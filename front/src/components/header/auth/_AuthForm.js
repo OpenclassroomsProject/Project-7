@@ -141,7 +141,7 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
           id: data.userId,
           pseudo: data.pseudo,
           Avatar: Avatar,
-          friends: data.friends,
+          followedUser: data.followedUser,
           admin: data.admin
         });
         // setUserConnected(data.JWT, data._id, data.pseudo, data.avatar);

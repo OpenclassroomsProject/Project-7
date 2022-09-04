@@ -1,5 +1,5 @@
 import { faCamera, faPlus } from '@fortawesome/free-solid-svg-icons';
-import React, { useEffect , useContext, useState, useCallback,useRef} from 'react';
+import React, { useEffect , useContext, useState, useCallback} from 'react';
 import { UserContext } from '../../App';
 import { Link,useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,8 +19,11 @@ export default function Profil ({ title, edit,refresh }) {
   const userContext = useContext(UserContext);
   const [dataProfil, setDataProfil] = useState(null);
   const [PostProfil, setPostProfil] = useState(null);
+  const [ItsYourFriend, setItsYourFriend] = useState();
   const Navigate = useNavigate()
 
+  console.log(userContext.id);
+  console.log(idParams);
 
 
   const fetchUser = useCallback(() => {
@@ -57,6 +60,7 @@ export default function Profil ({ title, edit,refresh }) {
     } 
     
   }, [refresh,fetchUser, fetchPostUser]);
+
 
   useEffect(() => {
     if( dataProfil === null ) fetchUser();

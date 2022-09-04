@@ -65,15 +65,21 @@ export default function NavDynamique(){
             </div>
         </>)
     }
+    const Nav = ( {children, className} )=>{
+      return <nav className={"flex items-center h-full w-full justify-between "+ className}>{children}</nav>
+    }
 
     return (<> 
-        <nav className="flex flex-row-reverse sm:flex-row items-center h-full w-full justify-between ">
+
             {userContext.userData?
+                <Nav className={'flex-row-reverse'}>
                   <NavConnected userContext={userContext}/>
+                </Nav>
             :
+              <Nav className={'flex-row'}>
                 <NavVisitors/>
+              </Nav>
             }
-        </nav>
         </>
     )
 }

@@ -21,12 +21,13 @@ module.exports = (req, res, next) => {
       // @ts-ignore
       req.avatar = decodeToken.avatar;
       req.bannerProfil = decodeToken.bannerProfil;
-      req.friends = decodeToken.friends
+      req.followedUser = decodeToken.followedUser || false
       // @ts-ignore
       req.admin = decodeToken.admin || false;
       next();
     }
   } catch (error) {
+    console.log(error);
     return res.status(401).json({ error: 'Auth error!' });
     // if (!CallbackError) return;
     // return CallbackError();

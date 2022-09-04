@@ -38,7 +38,8 @@ exports.login = (req, res) => {
                 .compare(req.body.password, user.password)
                 .then((valid) => {
                     if (!valid) return res.status(401).json({ error: 'Mot de passe incorrect !' });
-                    res.status(200).json({ avatar: user.avatar,bannerProfil: user.bannerProfil, pseudo: user.pseudo, userId: user._id, JWT: createJWT(user), admin: user.admin, friends:user.friends  });
+                    console.log(user);
+                    res.status(200).json({ avatar: user.avatar,bannerProfil: user.bannerProfil, pseudo: user.pseudo, userId: user._id, JWT: createJWT(user), admin: user.admin, followedUser: user.followedUser  });
                 })
                 .catch((error) => res.status(500).send({ error }));
         })
@@ -47,11 +48,10 @@ exports.login = (req, res) => {
 
 exports.verifyJWT = (req, res) => {
     auth(req, res, () => {
-        res.status(200).json({ msg: 'Successfully login !', _id: req._id, pseudo: req.pseudo, avatar: req.avatar,friends:req.friends ,admin: req.admin });
+        res.status(200).json({ msg: 'Successfully login !', _id: req._id, pseudo: req.pseudo, avatar: req.avatar,followedUser:req.followedUser ,admin: req.admin });
     });
 };
-
 function createJWT(data) {
-    return jwt.sign({ userId: data._id, pseudo: data.pseudo, avatar: data.avatar, friends:data.friends ,admin: data.admin }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' });
+    return jwt.sign({ userId: data._id, pseudo: data.pseudo, avatar: data.avatar, followedUser:data.followedUser ,admin: data.admin }, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' });
 }
 // const ServerURL = req.protocol + '://' + req.get('host');

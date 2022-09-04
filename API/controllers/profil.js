@@ -40,15 +40,17 @@ exports.udpateUserInfo = (req,res)=>{
 exports.followUser = (req,res)=>{
     console.log('ici');
     user.findById(req._id,(doc,data)=>{
-        if(data.friends.indexOf(req.params.id) != -1) return res.status(401).json({error: "User already in your friend list !"})
+        if(data.followedUser.indexOf(req.params.id) != -1) return res.status(401).json({error: "User already in your friend list !"})
 
         let update ={};
-        update.$push = {friends:req.params.id}
-        user.findByIdAndUpdate(req._id, update)
-        res.status(200).json()        
+        update.$push = {followedUser:req.params.id}
+        user.findByIdAndUpdate(req._id, update,(err,data)=>{
+            if(err) console.log(err);
+            console.log(data);
+            res.status(200).json("succes")        
+        })
     })
 }
-
 
 function noDataReceive(req,res){
     if( !req.filename) return res.status(401).json({error: "No photo received"});
