@@ -1,4 +1,4 @@
-import {Header} from './components/header/Header';
+import Header  from './components/header/Header';
 import io from 'socket.io-client'
 
 import { addHeaderJWT } from './components/fetch/addHeaderJWT';

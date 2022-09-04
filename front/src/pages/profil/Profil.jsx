@@ -22,8 +22,8 @@ export default function Profil ({ title, edit,refresh }) {
   const [ItsYourFriend, setItsYourFriend] = useState();
   const Navigate = useNavigate()
 
-  console.log(userContext.id);
-  console.log(idParams);
+  // console.log(userContext.id);
+  // console.log(idParams);
 
 
   const fetchUser = useCallback(() => {
