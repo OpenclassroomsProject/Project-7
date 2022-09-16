@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     job:{type:String , default:false},
     localisation:{type:String , default:false},
     followedUser: {type: [String] },
+    conversation : {type: [Object] } ,
     admin: { type: Boolean, default: false },
 });
 

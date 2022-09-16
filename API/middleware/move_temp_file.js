@@ -4,18 +4,9 @@
 const fs = require('fs');
 
 module.exports = (req, res) => {
-  const newPath = req.userFolder + '/asset/' + req.file.filename
+  const newPath = req.userFolder + '/assets/' + req.file.filename
   const tmpPath = req.userFolder + '/tmp/' + req.filename;
-  // if () {
 
-  // fs.mkdirSync(UserFolder, { recursive: true });
-  // }
-  // while (!fs.existsSync(tmpPath)) {
-  //   console.log('wait');
-  //   console.log('moove img');
-  // }
-
-  // @ts-ignore
   fs.access(tmpPath, fs.F_OK, (err) => {
     if (err) return console.error(err);
 

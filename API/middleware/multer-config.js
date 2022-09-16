@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
       if (!fs.existsSync(UserFolder)) {
         console.log('création du fichier');
         fs.mkdirSync(UserFolder, { recursive: true });
-        fs.mkdirSync(req.userFolder+'/asset');
+        fs.mkdirSync(req.userFolder+'/assets');
 
       }
     } catch (err) {

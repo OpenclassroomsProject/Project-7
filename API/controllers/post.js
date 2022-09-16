@@ -2,6 +2,7 @@
 // const { findByIdAndUpdate } = require('../models/Post.js');
 const Post = require('../models/Post.js');
 const User = require('../models/User.js');
+const userCrtl = require('./profil.js');
 const objectId = require('mongodb').ObjectId;
 
 exports.create = (req, res, next) => {
@@ -10,6 +11,7 @@ exports.create = (req, res, next) => {
   newPost.imagesUrl.push(req.filename);
   newPost.createBy = req._id;
   newPost.createByPseudo = req.pseudo;
+
   newPost
     .save()
     .then(() => {
@@ -19,14 +21,24 @@ exports.create = (req, res, next) => {
       res.status(201).json({ message: 'Post succeffuly upload !' });
     })
     .catch((err) => {
-      res.status(400).json({ err });
+      console.log(err);
+      res.status(400).json({ error: err });
     });
 };
 
-exports.getAll = (req, res) => {
-  const allPost = Post.find().sort({ date: -1 }).limit(20);
+exports.getAll = async(req, res) => {
+  const allPost = await Post.find().sort({ date: -1 }).limit(20);
+  let tmpAllPost = []
+ allPost.forEach((e,index) => {
+    req.params.id = e._doc.createBy;
 
-  ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(allPost, res)
+    userCrtl.getPseudo_and_Avatar(req,res,()=>{
+      tmpAllPost.push({...e._doc, avatar:req.result.avatar, createByPseudo:req.result.pseudo})
+      if(index+1 === allPost.length){
+        res.status(200).json(tmpAllPost)
+      }
+    })
+  })
 };
 
 exports.getById = (req, res) => {
@@ -104,8 +116,11 @@ exports.edit = (req, res, next) => {
   });
 };
 
-exports.getAllPostByUserId = (req,res)=>{
-  const allPost = Post.find({createBy:req.params.id}).sort({ date: -1 }).limit(20);
+exports.getAllPostByUserId = async (req,res,next)=>{
+  const allPost = await Post.find({createBy:req.params.id}).sort({ date: -1 }).limit(20);
+  // console.log(allPost);
+  req.result = allPost
+  if(next)return next()
   ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(allPost, res)
   // Post.find({createBy:req.params.id}, ( err,data)=>{
   // })
@@ -126,7 +141,8 @@ function ExecSearchPost_and_fetchUserAvatarWhoCreatedPost(find, res){
           const pathAvatar = FindUser.avatar === 'default.png' ? 'default.png' : element.createBy+'/'+FindUser.avatar;
           let tmp = {...element}
               tmp._doc.avatar = '/images/' +pathAvatar;
-      
+              tmp._doc.createByPseudo = FindUser.pseudo;
+
           Post.push(tmp._doc)
           
           if(Post.length === maxForeach) return res.status(200).json(Post)

@@ -14,6 +14,9 @@ router.post('/update/banner',multer.single('banner'), profilCrtl.updateBanner, m
 router.post('/update/avatar',multer.single('avatar'), profilCrtl.updateAvatar, move_temp_file)
 router.post('/update/bio',profilCrtl.udpateUserInfo)
 router.get('/follow/:id',valid_Id,profilCrtl.followUser)
+router.get('/unFollow/:id',valid_Id,profilCrtl.unFollowUser)
+router.get('/pseudo_&_avatar/:id', valid_Id, profilCrtl.getPseudo_and_Avatar )
+router.get('/preview/:id', valid_Id, profilCrtl.preview )
 // router.post('/',userCtrl.verifyJWT );
 // router.post('/Login', userCtrl.login);
 // router.post('/SignIn', userCtrl.signIn);

@@ -4,7 +4,6 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const PostSchema = new mongoose.Schema({
   createBy: { type: String, required: true },
-  createByPseudo: { type: String, required: true },
   date: { type: String, default: () => Date.now() },
   description: { type: String, required: true },
   imagesUrl: { type: [String], required: false },
