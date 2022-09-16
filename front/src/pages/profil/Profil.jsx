@@ -1,6 +1,6 @@
 import { faCamera, faPlus } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect , useContext, useState, useCallback} from 'react';
-import { UserContext } from '../../App';
+import { CacheContext, UserContext } from '../../App';
 import { Link,useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
@@ -9,69 +9,53 @@ import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { server } from '../../server';
 import { createRef } from 'react';
 import Spinner from '../../components/fetch/spinner/Spinner';
-import PostTemplate from '../../components/pages/post/PostTemplate';
+import PostTemplate from '../../components/post/PostTemplate';
 import { addHeaderJWT } from '../../components/fetch/addHeaderJWT';
 import Modal from '../../components/modal/Modal';
+import { useRef } from 'react';
+import socket from '../../components/socket/socket';
+
 
 
 export default function Profil ({ title, edit,refresh }) {
-  const idParams = window.location.pathname.split('/')[2];
-  const userContext = useContext(UserContext);
-  const [dataProfil, setDataProfil] = useState(null);
-  const [PostProfil, setPostProfil] = useState(null);
-  const [ItsYourFriend, setItsYourFriend] = useState();
+  const cacheContext = useContext(CacheContext);
+  const [userContext, updateUserContext] = useContext(UserContext);
+  
+  const [dataProfil, setDataProfil] = useState({profilInfo:false,post:false});
+  const [ItsYourFriend, setItsYourFriend] = useState(null);
   const Navigate = useNavigate()
 
-  // console.log(userContext.id);
-  // console.log(idParams);
+  document.title= title
 
 
-  const fetchUser = useCallback(() => {
-    if(!userContext.userData) return false;
-      let param = idParams;
-      // console.log(idParams);
-      if(!idParams || idParams === 'edit')  param = userContext.userData.id
-      
-      fetch(server+'/api/profil/'+param, {headers: addHeaderJWT()})
-      .then(res => {
-        if(!res.ok) return Navigate('/profil');
-        return res.json();
-      })
-      .then(data => {
-        const editProfil=data._id === userContext.userData.id? true: false;
-        setDataProfil({...data, editProfil: editProfil })
-      })
-  }, [idParams,userContext, Navigate]);
-  const fetchPostUser= useCallback(()=>{
-    if(!userContext.userData) return false;
-    let param = idParams;
-    if(!idParams || idParams === 'edit')  param = userContext.userData.id
-    fetch(server+'/api/post/getAllByUserId/'+param, {headers: addHeaderJWT()})
-      .then(res=>res.json())
-      .then(data=>{
-        setPostProfil(data)
-      })
-  },[idParams, userContext])
-
-  useEffect(() => {
-    if(refresh){
-      fetchUser();
-      fetchPostUser();
-    } 
-    
-  }, [refresh,fetchUser, fetchPostUser]);
-
-
-  useEffect(() => {
-    if( dataProfil === null ) fetchUser();
-  });
- 
+  let idParams = window.location.pathname.split('/')[2];
+  if(!idParams || idParams === 'edit')  idParams = userContext._id
   
-  useEffect(()=>{ 
-    if((PostProfil === null) && dataProfil ) fetchPostUser();
+  if(cacheContext.value.pageActive !== "profil") cacheContext.value.pageActive='profil';
+
+  useEffect(()=>{
+    // console.log('useeffect');
+
+    const fetchUser = ()=>{
+        fetch(server+'/api/profil/preview/'+idParams, {headers: addHeaderJWT()})
+          .then(res=>res.json())
+          .then(data=>setDataProfil(data))      
+    }
+    if(!dataProfil.profilInfo  || (refresh && dataProfil.profilInfo._id !== userContext._id )){
+      fetchUser()
+    }
   })
+  
+  // useEffect(() => {
+
+  //   if(userContext && ItsYourFriend === null  && userContext.followedUser ){
+  //     userContext.followedUser.forEach((element) => {
+  //       if(element === idParams) setItsYourFriend(true)
+  //     });
+  //   } 
+  // }, [ItsYourFriend,idParams, userContext]);
     
-  if(!dataProfil) return false
+  if(!dataProfil.profilInfo) return false
 
 
   const ButtonEditPicture = ({className, profil, banner})=>{
@@ -132,23 +116,152 @@ export default function Profil ({ title, edit,refresh }) {
       </form>
     )
   }
-  const AllPost = ()=>{
-    if(PostProfil === null) return <Spinner className="mt-2"/>;
-    if(PostProfil.length === 0 || !PostProfil) return <div className=' border mt-2 bg-white w-full flex items-center justify-center h-40 text-[#aaa] '> <h2 className=''>Aucune acitivité</h2> </div>
-    return PostProfil.map((data)=>(<PostTemplate {...data} key={data._id} />));
+
+  const ButtonFollow = ()=>{
+    const handleClickFollow= ()=>{
+      let tmp = {...userContext}
+
+      if(!ItsYourFriend) {
+        fetch(server+'/api/profil/follow/'+idParams,{headers:addHeaderJWT()})
+        tmp.followedUser.push(idParams)
+        userContext.setDataUser(tmp)
+        return setItsYourFriend(true)
+      }
+
+      let indexItsMyFollowedList;
+
+      if(tmp.followedUser){
+        tmp.followedUser.forEach((element,index)=>{
+          if(element=== idParams) {
+            indexItsMyFollowedList= index;
+          }
+        })
+        delete tmp.followedUser[indexItsMyFollowedList]
+
+        fetch(server+'/api/profil/unFollow/'+idParams,{headers:addHeaderJWT()})
+        .then(res=>{
+          if(res.ok){
+            userContext.setDataUser(tmp);
+            setItsYourFriend(false)
+          }
+        })
+      }
+
+    }
+    return(
+      <button className='hover:cursor-pointer border pl-3 pr-4 py-1 rounded-full bg-blue-600 text-white h-fit' onClick={handleClickFollow}> 
+        {ItsYourFriend?
+          <>
+            <div className='flex items-center '>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" data-supported-dps="16x16" fill="currentColor" className="" width="16" height="16" focusable="false">
+                <path d="M12.57 2H15L6 15l-5-5 1.41-1.41 3.31 3.3z"></path>
+              </svg>
+              <span className='ml-1'>Suivi</span>
+            </div>
+          </>
+        :
+          <>
+            <FontAwesomeIcon icon={faPlus} className='mr-2' />
+            Suivre
+          </>
+        }
+      </button>
+    )
   }
-  // if() console.log('ici');
-  const BannerProfil = dataProfil.bannerProfil === 'false'? '/bg-profil.svg' :server+"/images/"+dataProfil._id+'/asset/'+ dataProfil.bannerProfil; 
-  // const bannerProfil= dataProfil.bannerProfil?   "/bg-profil.svg";
+  const ButtonContact =()=>{
+    const [SendMessage, setSendMessage] = useState(false);
+    // const handleClickContact =(e)=>{
+    //   setSendMessage(true)
+    // }
+    const Conversation = ()=>{
+      const inputRef = useRef();
+      const [Conversation, setConversation] = useState(null);
+
+      // useEffect(()=>{
+      //   userContext.userData.conversation.find
+      //   if(Conversation === null){
+      //     fetch(server+'/api/conversation/find/'+idParams, {headers: addHeaderJWT()})
+      //       .then(res=> res.json())
+      //       .then(({conversation_ID}) => setConversation({id: conversation_ID}))
+      //   }
+      //   if(Conversation && Conversation.id){
+        
+      //   }
+      // },[Conversation])
+      socket.on('whisper',(data)=>{
+        console.log(data);
+      })
+
+
+
+      const handleSubmitMessage=()=>{
+        if(!inputRef.current.value) return
+        socket.emit('send message',inputRef.current.value , Conversation.id, idParams );
+      }
+      const styleMessage = 'flex mr-4 ml-8 '
+      const styles ={
+        message:{
+          send: styleMessage+' justify-end',
+          receive:styleMessage+'',
+          content:'border px-3 py-1 rounded bg-gray-200',
+        },
+      }
+      const MessageSend = () =>{
+        return(
+          <div className={styles.message.send}>
+             <span className={styles.message.content}>Message etcxc</span>
+          </div>
+        )
+      }
+      const MessageReceive = () =>{
+        return( 
+          <div className={styles.message.receive}> 
+            <span className={styles.message.content}>Message Recu</span>
+          </div>
+        )
+      }
+
+
+      return(
+        <div className='absolute bg-white h-screen w-screen top-0 left-0 z-20 flex justify-between flex-col' > 
+          <div className='flex flex-col  text-black'>
+            <nav className='bg-red-300 w-full h-8'>
+              <span> #Destinataire</span>
+            </nav>
+            <span className=' text-center '>---------- date -----------</span>
+            <MessageSend/>
+            <MessageReceive/>
+          </div>
+          <div className='flex'>
+            <input type='text' ref={inputRef} className='border-2 w-full h-10'></input>
+            <button type='submit' onClick={handleSubmitMessage}>Envoyer un message</button>
+          </div>
+        </div>
+      )
+    }
+    return (
+    // <Link to={'/messagerie/newMessage/'+idParams} className='border border-blue-600 text-blue-600 h-fit pl-3 pr-4 py-1 ml-2 rounded-full'>
+    //   <span>Message</span>
+    // </Link>
+    <div className='border border-blue-600 text-blue-600 h-fit pl-3 pr-4 py-1 ml-2 rounded-full cursor-pointer' onClick={()=>cacheContext.value.messaging.sendMessage(idParams)}>
+      <span>Message</span>
+    </div>
+    )
+  }
+  const AllPost = ()=>{
+    if(dataProfil.post === null) return <Spinner className="mt-2"/>;
+    if( !dataProfil.post ||dataProfil.post.length === 0) return <div className=' border mt-2 bg-white w-full flex items-center justify-center h-40 text-[#aaa] '> <h2 className=''>Aucune acitivité</h2> </div>
+    return dataProfil.post.map((data)=>(<PostTemplate {...data} key={data._id} avatar={dataProfil.profilInfo.avatar } createByPseudo={dataProfil.profilInfo.pseudo} />));
+  }
+
+  const BannerProfil = dataProfil.profilInfo.bannerProfil === 'false'? '/bg-profil.svg' :dataProfil.profilInfo.bannerProfil; 
   const styles = {
     banner :{
       backgroundImage:  "url('"+BannerProfil+"')"
     }
   }
 
-  const url = window.location.origin.split(':')
-  const avatar = dataProfil.avatar === "default.png"? dataProfil.avatar : dataProfil._id + "/asset/"+dataProfil.avatar; 
-  const urlAvatar = url[0]+':'+url[1]+":3001/images/"+avatar
+
 
   const EditProfil = ()=>{
     const [inputs, setInputs] = useState({});
@@ -194,30 +307,27 @@ export default function Profil ({ title, edit,refresh }) {
     <main className='flex flex-col items-center mb-28  sm:mt-2 sm:mx-4 '>    
       <div style={{...styles.banner}}  className="w-full flex justify-between bg-banner-profil px-4 ">
         <span className=' relative top-10'>
-          <img className=' w-32 h-32 rounded-full' src={urlAvatar} alt="profil"/>
-          {dataProfil.editProfil && <ButtonEditPicture profil className='border absolute right-0 bottom-0'/>}
+          <img className=' w-32 h-32 rounded-full' src={server+dataProfil.profilInfo.avatar } alt="profil"/>
+          {dataProfil.profilInfo.editProfil && <ButtonEditPicture profil className='border absolute right-0 bottom-0'/>}
         </span>
-        {dataProfil.editProfil  && <ButtonEditPicture banner className=' mt-6 mr-2'/>}
+        {dataProfil.profilInfo.editProfil  && <ButtonEditPicture banner className=' mt-6 mr-2'/>}
       </div>
       <div className=' w-full  px-4 bg-white mb-2 border-y flex justify-between'>
         <div className='flex flex-col leading-6 pt-10 pb-5 '>
-          <h1 className=' text-xl font-bold -mb-1'>{dataProfil.pseudo}</h1>
-          <span className='text-s '> {dataProfil.job} </span>
-          <span className='text-xs text-[#aaa]'> {dataProfil.localisation !== 'false'? dataProfil.localisation :''} {!dataProfil.editProfil && <Link className='pl-2 text-blue-500 font-bold' to='/'>Coordonées</Link>}</span>
+          <h1 className=' text-xl font-bold -mb-1'>{dataProfil.profilInfo.pseudo}</h1>
+          <span className='text-s '> {dataProfil.profilInfo.job} </span>
+          <span className='text-xs text-[#aaa]'> {dataProfil.profilInfo.localisation !== 'false'? dataProfil.profilInfo.localisation :''} {!dataProfil.editProfil && <Link className='pl-2 text-blue-500 font-bold' to='/'>Coordonées</Link>}</span>
           {/* {!edit || dataProfil.editProfil? :''} */}
         </div>
-        {dataProfil.editProfil?
+        {dataProfil.profilInfo.editProfil?
             <Link to='/profil/edit'>
               <FontAwesomeIcon icon={faPencil} className="mt-4 text-[#aaa] hover:text-black cursor-pointer" /> 
             </Link>
           :
-            <button className='hover:cursor-pointer mt-4 pl-3 pr-4 py-1 border rounded-full bg-blue-600 text-white h-fit' onClick={()=>{
-              console.log(idParams);
-              fetch(server+'/api/profil/follow/'+idParams,{headers:addHeaderJWT()})
-            }}> 
-              <FontAwesomeIcon icon={faPlus} className='mr-2' />
-              <span>Suivre</span>
-            </button>
+          <div className='flex mt-4'>
+            <ButtonFollow/>
+            <ButtonContact/>
+          </div>
         }
       </div>
       <AllPost/>

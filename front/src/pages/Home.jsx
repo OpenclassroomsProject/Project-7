@@ -5,38 +5,48 @@ import React, { useEffect, useState, useContext } from 'react';
 // import { ThemeContext } from '../App';
 import { addHeaderJWT } from '../components/fetch/addHeaderJWT';
 import { server } from '../server';
-import PostTemplate from '../components/pages/post/PostTemplate';
+import PostTemplate from '../components/post/PostTemplate';
 import Spinner from '../components/fetch/spinner/Spinner';
-import { CacheContext } from '../App';
+import { CacheContext, UserContext } from '../App';
 // import Page from './../components/templates/_page';
 // import _theme from '../components/pages/home/_theme';
 
 export default function Home ({ title }) {
   // const theme = _theme(useContext(ThemeContext));
+  const [userContext, updateUserContext] = useContext(UserContext)
   // console.log(theme);
   const cacheContext= useContext(CacheContext)
   const [SpinnerState, setSpinner] = useState(cacheContext.home? false:true);
+  
+  document.title = title;
+  if(cacheContext.value.pageActive !== "home") cacheContext.value.pageActive='home'
+
+
+
+
+  // useEffect(() => {
+  //   if(cacheContext.pageActive !== "home") cacheContext.pageActive='home';
+  // }, [cacheContext]);
 
   useEffect(() => {
-    document.title = title;
-  }, [title]);
+     // FUNCTIONS
 
-  const findAllPost = async () => {
-    const res = await fetch(server + '/api/post/', { headers: addHeaderJWT() });
-    const data = await res.json();
+     const findAllPost = async () => {
 
-    let objTMP= {...cacheContext};
-        objTMP.home = data
-
-    // if(cacheContext && cacheContext.cache &&  !cacheContext.cache.home) objTMP = {...cacheContext,home:data}
-    cacheContext.updateCache(objTMP)
-    setSpinner(false)
-  };
-
-  useEffect(() => {
-    if(!cacheContext.home ){
+      if(!userContext._id ) return false;
+      const res = await fetch(server + '/api/post/', { headers: addHeaderJWT() });
+      if(!res.ok) return false;
+      const data = await res.json();
+      cacheContext.value.home=data
+      setSpinner(false)
+    };
+    // console.log(cacheContext);    
+    if(!cacheContext.value.home ){
       findAllPost();
+    }else{
+      setSpinner(false)
     }
+
     const { hash } = window.location;
     if (hash !== '') {
       const idPost = hash.replace('#', '');
@@ -45,8 +55,7 @@ export default function Home ({ title }) {
         element.scrollIntoView();
       }
     }
-
-  });
+  },[cacheContext , userContext]);
 
   // const heightTitle = 3.5;
   // const marginTopTitle = 1;
@@ -55,10 +64,9 @@ export default function Home ({ title }) {
 
   const AllPost = ()=>{
     if(SpinnerState) return <Spinner className="mt-2"/>;
+    if(cacheContext.value.home.length === 0 ) return <div className=' border mt-2 bg-white w-full flex items-center justify-center h-40 text-[#aaa] '> <h2 className=''>Aucune acitivité</h2> </div>
 
-    if(cacheContext.home.length === 0 ) return <div className=' border mt-2 bg-white w-full flex items-center justify-center h-40 text-[#aaa] '> <h2 className=''>Aucune acitivité</h2> </div>
-
-    return cacheContext.home.map((data)=>(<PostTemplate {...data} key={data._id} />));
+    return cacheContext.value.home.map((data)=>(<PostTemplate {...data} key={data._id} />));
   }
   const Panel = ({ children = undefined, className = '' }) => {
     return <div className={className + ' hidden rounded-lg  ml-10 mr-10 bg-white w-56  flex-col items-center'}>{children}</div>;

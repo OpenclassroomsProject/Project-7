@@ -1,6 +1,6 @@
-export const logOut = (userContext, e = false ) => {
+export const logOut = (updateContext, e = false ) => {
     if(e) e.preventDefault();
     // @ts-ignore
-    userContext.setDataUser(false);
+    updateContext(false);
     return localStorage.clear();
   };

@@ -6,10 +6,10 @@ import { server } from '../../../server';
 export default function AuthForm ({ type, closeLogPanel = null }) {
   const Navigate = useNavigate()
 
-  const userContext = useContext(UserContext);
+  const [userContext, updateUserContext] = useContext(UserContext);
   // const responsiveContext = useContext(ResponsiveContext);
   // console.log(responsiveContext.mobile);
-  const [formType, setFormType] = useState(type);
+  const [formType] = useState(type);
 
   // console.log(formType);
 
@@ -44,6 +44,7 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
             name="mail"
             id="mail"
             className={style.input}
+            autoComplete='username'
              >
             </input>
         </div>
@@ -54,6 +55,7 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
             type="password"
             name="password"
             id="password"
+            autoComplete='current-password'
             className={style.input}></input>
         </div>
           <Link to='/ForgotPassword' className={`${style.link} ${style.hover.link}`} > Mot de passe oublié ?</Link>
@@ -128,20 +130,20 @@ export default function AuthForm ({ type, closeLogPanel = null }) {
       })
       .then((data) => {
         if (!data) return console.log('No dta receive from API !');
-        if (!data.JWT) return console.log('Server say ok but he dont send KWT token');
+        if (!data.JWT) return console.log('Server say ok but he dont send JWT token');
         if(closeLogPanel != null){
           closeLogPanel();
         }
         console.log(data);
     const Avatar = '/images/' + (data.avatar === "default.png"? "default.png": data.userId+'/asset/'+data.avatar);
-
         // @ts-ignore
-        userContext.setDataUser({
+        updateUserContext({
           jwt: data.JWT,
-          id: data.userId,
+          _id: data.userId,
           pseudo: data.pseudo,
-          Avatar: Avatar,
+          avatar: Avatar,
           followedUser: data.followedUser,
+          conversation : data.conversation,
           admin: data.admin
         });
         // setUserConnected(data.JWT, data._id, data.pseudo, data.avatar);

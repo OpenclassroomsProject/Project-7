@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots, faShare } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp } from '@fortawesome/free-regular-svg-icons';
-import { server } from '../../../server';
-import { addHeaderJWT } from '../../fetch/addHeaderJWT';
+import { server } from '../../server';
+import { addHeaderJWT } from '../fetch/addHeaderJWT';
 import React from 'react';
 export default function LikedCounter ({ Post, setPost }) {
   if (!Post && setPost) return;

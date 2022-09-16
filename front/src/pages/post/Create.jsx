@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext, createRef } from 'react
 import { addHeaderJWT } from '../../components/fetch/addHeaderJWT';
 import { server } from '../../server';
 import ImageDelete from '../../components/img/ImageDelete';
-import { UserContext } from '../../App';
+import { CacheContext, UserContext } from '../../App';
 import { Link } from 'react-router-dom';
 
 // import { confirm } from "./../../components/modal/Confirm";
@@ -11,8 +11,10 @@ import { Link } from 'react-router-dom';
 
 export default function CreatePost ({ title }) {
   const [postIsValid, setPostIsValid] = useState(false);
+
   // @ts-ignore
-  const userContext = useContext(UserContext);
+  const cacheContext=useContext(CacheContext)
+  const [userContext, updateUserContext ]= useContext(UserContext);
 
   const textArea = useRef();
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function CreatePost ({ title }) {
 
     body.append('file', image);
 
-    fetch(server + 'api/post/create', {
+    fetch(server + '/api/post/create', {
       method: 'POST',
       mode: 'cors',
       headers: addHeaderJWT(),
@@ -65,12 +67,11 @@ export default function CreatePost ({ title }) {
     });
   };
 
-  if(! userContext.userData) return false
-  console.log(userContext.userData);
+  if(! userContext) return false
   return (
     <main className="absolute h-screen top-0 right-0 w-screen bg-white z-50 flex flex-col ">
       <nav className="flex items-center h-12 border-b-[1px]">
-        <Link to={'/'} className="p-3 text-gray-500    ">
+        <Link to={cacheContext.value.previousPath[0]?cacheContext.value.previousPath[0]:'/' } className="p-3 text-gray-500    ">
           <svg viewBox="0 0 24 24" data-supported-dps="24x24" fill="currentColor" className="h-6">
             <path d="M13.42 12L20 18.58 18.58 20 12 13.42 5.42 20 4 18.58 10.58 12 4 5.42 5.42 4 12 10.58 18.58 4 20 5.42z"></path>
           </svg>
@@ -85,9 +86,9 @@ export default function CreatePost ({ title }) {
       <form>      
         <div className="p-4 flex flex-col  border-b-[1px]">
           <div className="flex flex-row mb-4">
-            <img src={server+userContext.userData.Avatar} className="rounded-full h-10 w-10 mr-4" alt="profil"></img>
+            <img src={server+userContext.avatar} className="rounded-full h-10 w-10 mr-4" alt="profil"></img>
             <div>
-              <span> {userContext.userData.pseudo}</span>
+              <span> {userContext.pseudo}</span>
             </div>
           </div>
           <textarea
@@ -105,7 +106,8 @@ export default function CreatePost ({ title }) {
         </div>
         <button
           className="p-4 cursor-pointer"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             fileRef.current.click();
           }}>
           <svg viewBox="0 0 24 24" data-supported-dps="24x24" className="icon fill-gray-600 h-6 w-6 ">

@@ -10,8 +10,8 @@ import ImageDelete from '../../components/img/ImageDelete';
 // import postTemplate from './post/_template';
 import UnixToDate from '../../components/date/UnixToDate';
 // import Page from '../../components/templates/_page';
-import LikedCounter from '../../components/pages/post/_like&dislikeCounter';
-import Description from '../../components/pages/post/_description';
+import LikedCounter from '../../components/post/_like&dislikeCounter';
+import Description from '../../components/post/_description';
 import { ThemeContext } from '../profil/Settings';
 
 export default function GetFormId () {

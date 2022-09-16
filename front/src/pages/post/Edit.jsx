@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { addHeaderJWT } from '../../components/fetch/addHeaderJWT';
 import ImageDelete from '../../components/img/ImageDelete';
 import Modal from '../../components/modal/Modal';
-import ChoseIMG from '../../components/pages/post/_choseIMG';
+import ChoseIMG from '../../components/post/_choseIMG';
 import { server } from '../../server';
 
 // eslint-disable-next-line camelcase

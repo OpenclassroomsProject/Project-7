@@ -1,18 +1,23 @@
-import { useState, useContext, memo } from "react";
+import { useState,useEffect, useContext, memo, createRef, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
-import { ResponsiveContext } from "../../../App";
+import { ResponsiveContext, UserContext } from "../../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faHouseChimney, faBell, faPlus, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { logOut } from '../auth/_logout';
 import { Logo } from "../Header";
 
 import { ThemeContext } from "../../../pages/profil/Settings";
+import { CacheContext } from "../../../App";
+import Avatar from "../../avatar/_Avatar";
 
 
-const Connected = ({userContext}) => {
+const Connected = () => {
+    const [userContext, updateConntext] = useContext(UserContext)
+    const cacheContext = useContext(CacheContext);
     const [ClickProfil, setClickProfil] = useState(false);
     const [ClickBell, setClickBell] = useState(false);
-    const responsiveContext = useContext(ResponsiveContext)
+    // const responsiveContext = useContext(ResponsiveContext)
+    const ButtonRef = createRef()
     
     const cssButton ='  cursor-pointer w-10  h-10 sm:border-[2px] sm:flex justify-center items-center  rounded-full overflow-hidden ';
     const style = {
@@ -23,20 +28,33 @@ const Connected = ({userContext}) => {
         'sm:hover:border-[3px] hover:shadow-xl  hover:border-secondary-pink hover:text-secondary-pink ',
       iconButton: 'p-2'
     };
+    function closeProfilOption (){
+      if(ClickProfil) return setClickProfil(false)
+    }
+    cacheContext.value.header = {closeProfilOption : closeProfilOption  }
+
     const PreviewAvatar = ()=>{
+      
+      // useLayoutEffect(()=>{
+      //   console.log("resfds");
+      // },[])
       return(
-        <button
-        className={` flex sm:w-24  items-center justify-between  ${
+        <button ref={ButtonRef}
+        className={` flex sm:desktop sm:w-24  items-center justify-between  ${
           ClickProfil ? style.buttonPush : style.button + style.buttonHover
         } `}
         onClick={() => {
-          if(!responsiveContext.state.mobile)
-          return setClickProfil(!ClickProfil)}}
-          >
-          <div className={'h-full w-full sm:w-[40%] p-[1px] sm:p-1'}>
-          <ProfilPicture src={urlAvatar}/>
-          </div>
-          <div className="mr-auto hidden sm:block">Profil</div>
+          // if(!responsiveContext.state.mobile)
+          cacheContext.value.messaging.closeMessaging();
+          return setClickProfil(!ClickProfil)
+
+        }}
+        >
+
+            <div className="h-full aspect-square p-[0.1rem]">
+              <Avatar src={urlAvatar} />
+            </div>
+            <div className="mr-auto hidden sm:block">Profil</div>
        </button>
       )
     }
@@ -45,41 +63,42 @@ const Connected = ({userContext}) => {
         <div className=" hidden sm:flex absolute bg-white w-60 h-28 top-16 right-10 rounded   flex-col  shadow-2xl z-10 border border-black border-opacity-[15%]">
           <div className="w-full  h-full flex justify-around items-center ">
             {/* <div className="flex"> */}
-            <Link to='/post/create' className={`${style.button} ${style.buttonHover} `}>
+            <Link to='/post/create' className={`${style.button} ${style.buttonHover} `} onClick={closeProfilOption}>
               <FontAwesomeIcon icon={faPlus} />
             </Link>
-            <Link to='/profil' className={`${style.button} ${style.buttonHover}`}>
+            <Link to='/profil' className={`${style.button} ${style.buttonHover}`} onClick={closeProfilOption}>
               <FontAwesomeIcon icon={faUser} />
             </Link>
-            <Link to='/profil/settings' className={`${style.button} ${style.buttonHover}`}>
+            <Link to='/profil/settings' className={`${style.button} ${style.buttonHover}`} onClick={closeProfilOption}>
               <FontAwesomeIcon icon={faGear} />
             </Link>
             {/* </div> */}
           </div>
-          <button className="bg-white text-tertiary-black h-10 p-2  rounded-sm border-t" onClick={(e)=>{ logOut(userContext)}}>
+          <button className="bg-white text-tertiary-black h-10 p-2  rounded-sm border-t" onClick={(e)=>{ logOut(updateConntext,e)}}>
             Déconexion
           </button>
         </div>
       )
     }
-
     const NavBottom = ()=>{
-      const [pageActive, setPageActive] = useState(false);
-
       const themeContext = useContext(ThemeContext);
       const class_buttonMobile = 'cursor-pointer w-10 h-10  flex justify-center items-center';
-
+      const[ active , setPageActive] = useState(null)
+      const pageActive = cacheContext.value.pageActive;
+      useEffect(() => {
+          setPageActive(pageActive);
+      }, [pageActive])
       return(
       <>
                 {/* ============================ Nav mobile bottom ============================== */}
-           {userContext.userData?
+           {userContext?
           <nav
             className={`fixed z-20 bottom-0 left-0  w-full h-12 border-t-[1px] flex items-center justify-around sm:hidden 
                   ${themeContext.header.background + ' ' + themeContext.header.fontColor.secondary}`}>
             <Link
               to="/"
               // @ts-ignore
-              className={`${class_buttonMobile} ${pageActive.home && 'text-black'}`}
+              className={`${class_buttonMobile} ${active==="home"? themeContext.header.fontColor.main:themeContext.header.fontColor.secondary}`}
               onClick={() => {
                 // @ts-ignore
                 // setPageActive({ home: true });
@@ -89,11 +108,11 @@ const Connected = ({userContext}) => {
 
             <Link
               to={
-                !userContext.userData
+                !userContext
                   ? '/login'
                   : '/profil/'
               }
-              className={`${class_buttonMobile} ${pageActive.profil && 'text-black'}`}
+              className={`${class_buttonMobile} ${active==="profil"? themeContext.header.fontColor.main:themeContext.header.fontColor.secondary}`}
               onClick={() => {
                 // @ts-ignore
                 // setPageActive({ profil: true });
@@ -105,8 +124,10 @@ const Connected = ({userContext}) => {
 
             <Link
               // @ts-ignore
-              to={!userContext.userData ? '/login' : '/post/create'}
-              className={`${class_buttonMobile} `}>
+              to={!userContext ? '/login' : '/post/create'}
+              className={`${class_buttonMobile}  `} onClick={()=>{
+                cacheContext.value.previousPath.push(window.location.pathname)
+              }}>
               {/* <FontAwesomeIcon className='text-tertiary-black h-8' icon={faPlus} height='90%' /> */}
               <svg
                 className=" h-[70%]  "
@@ -120,14 +141,14 @@ const Connected = ({userContext}) => {
             </Link>
 
           {/*  */}
-            <Link to={'/notifications'}>
+            <Link to={'/notifications'} className={`${cacheContext.value.pageActive==="notifications"? themeContext.header.fontColor.main:themeContext.header.fontColor.secondary}`}>
               <FontAwesomeIcon icon={faBell}/>
             </Link>
             <Link
               // @ts-ignore
-              to={!userContext.userData ? '/login' : './profil/settings'}
+              to={!userContext? '/login' : './profil/settings'}
               // @ts-ignore
-              className={`${class_buttonMobile} ${pageActive.settings ? 'text-black' : ''}  `}
+              className={`${class_buttonMobile} ${cacheContext.value.pageActive==="settings"? themeContext.header.fontColor.main:themeContext.header.fontColor.secondary}`}
               // onClick={() => {
               //   // @ts-ignore
               //   setPageActive({ settings: true });
@@ -152,25 +173,31 @@ const Connected = ({userContext}) => {
     }
 
 
-
-
-    const ProfilPicture = memo(function ProfilPicture({ src }) {
-      return <img src={src} className="rounded-full h-full"   height={'100%'} alt="user profil" />;
-    });
-
+    // const ProfilPicture = memo(function ProfilPicture({ src }) {
+    //   return <img src={src} className="rounded-full h-full"   height={'100%'} alt="user profil" />;
+    // });
+    // console.log(userContext);
     const url = window.location.origin.split(':')
-    const urlAvatar = url[0]+':'+url[1]+":3001"+userContext.userData.Avatar
+    const urlAvatar = url[0]+':'+url[1]+":3001"+userContext.avatar
 
     return (
         // ========================================== Nav top  =================================================
-    <>
+    <nav className="flex flex-row-reverse sm:flex-row justify-between w-full">
       <Logo className={'hidden sm:flex sm:w-52 '}/>
-      {/* <ButtonNotif className='flex sm:hidden border-[#e5e7eb] border-2'/> */}
+
       <Link
               // @ts-ignore
-              to={!userContext.userData ? '/login' : '/messagerie'}
+              to={!userContext ? '/login' : '/messagerie'}
               // @ts-ignore
-              className={`text-black w-[10vw]`}>
+              className={`text-black w-10 h-10 sm:hidden`} onClick={(e)=>{
+                // e.preventDefault()
+                // console.log(cacheContext);
+                // let tmp = {...cacheContext}
+                // ButtonRef.current.click();
+                // closeProfilOption()
+                cacheContext.value.previousPath.push(window.location.pathname)
+                // cacheContext.updateCache(tmp)
+              }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -183,8 +210,9 @@ const Connected = ({userContext}) => {
       </Link>
 
       <SearchBar/>
+
       <div className="flex">
-        <Link to="/" className={style.button + 'hidden'}>
+        <Link to="/" className={style.button + 'hidden'} onClick={closeProfilOption}>
             <FontAwesomeIcon className={style.iconButton} icon={faHouseChimney} height="100%" width="100%" />
         </Link>
 
@@ -192,17 +220,18 @@ const Connected = ({userContext}) => {
               className={`${
                 ClickBell ? style.buttonPush : style.button + style.buttonHover
               } mr-2 ml-2 hidden sm:flex' `}
-              onClick={() => setClickBell(!ClickBell)}>
+              onClick={closeProfilOption}>
               <FontAwesomeIcon className={style.iconButton} icon={faBell} height="100%" />
         </button>
           
         <PreviewAvatar>Profil</PreviewAvatar>
       </div>
+
       {/* ================ OTION WHEN CLICK PROFIL ON DESKTOP ================*/}
       {ClickProfil ? <Option/>: false }
 
       <NavBottom/>
-    </>
+    </nav>
       // ========================================== End nav top  =================================================
       );
     };

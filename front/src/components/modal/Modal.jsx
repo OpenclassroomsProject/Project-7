@@ -6,7 +6,7 @@ function Modal ({ children, className = null }) {
   if (close) {
     return <></>;
   }
-  let defaultClassName = 'fixed top-0 left-0 z-50';
+  let defaultClassName = 'fixed top-0 left-0 z-50 ';
   if (className) {
     defaultClassName = className;
   }

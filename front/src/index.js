@@ -22,38 +22,49 @@ import GetPost from './pages/post/[id]';
 import EditPost from './pages/post/Edit';
 
 
-import Messaging from './pages/messaging/_Messaging';
+import Messaging from './pages/messaging/Messaging';
+import Header from './components/header/Header';
+// import OpenConversation from './pages/messaging/_OpenConversation.jsx'
+import { UserContext } from './App';
+import Page from './components/templates/_page';
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Router>
+  <>
       {/* <Header userContext={UserContext} /> */}
       {/* <UserContext.Provider> */}
-      <App>
-        {/* <App userContext={UserContext} /> */}
-        <Routes>
-          <Route path="/header" />
-          <Route path="/" element={<Home title={'Accueil'} />} />
-          <Route exact path="/SignIn" element={<SingIn />} />
-          <Route exact path="/Login" element={<Login />} />
-          <Route path="/messagerie" element={<Messaging />} />
-          {/* <Route path='/profil' element={<Profil title={'Profil xxxxx '} />} /> */}
-          <Route path="/profil/" element={<Profil refresh title={'Mon Profil'} />} />
-          <Route path="/profil/edit" element={<Profil edit title={'Editer mon profil '} />} />
-          <Route path="/profil/:id" element={<Profil title={'Profil xxxxx '} />} />
-          <Route path="/profil/options" element={<Options />} />
-          <Route path="/profil/settings" element={<Setting />} />
-          <Route path="/post/create" element={<CreatePost title={"Création d'un Post"} />} />
-          <Route path="/post/edit/:id" element={<
-          // @ts-ignore
-          EditPost />} />
-          <Route path="/post/:id" element={<GetPost />} />
-        </Routes>
-      </App>
+      <Router>
+        <App>
+          {/* <App userContext={UserContext} /> */}
+          <Header/>
+          <Page>
+                <Routes>
+                    <Route path="/header" element={<Messaging/>} />
+                    <Route path="/" element={<Home title={'Accueil'} />} />
+                    <Route exact path="/SignIn" element={<SingIn />} />
+                    <Route exact path="/Login" element={<Login />} />
+                    <Route path="/messagerie" element={<Messaging />} />
+                    <Route path="/messagerie/:idConversation" element={<Messaging openMessage/>} />
+                    <Route path="/messagerie/newMessage/:userID" element={<Messaging createMessage/>} />
+                    {/* <Route path='/profil' element={<Profil title={'Profil xxxxx '} />} /> */}
+                    <Route path="/profil/" element={<Profil refresh title={'Mon Profil'} />} />
+                    <Route path="/profil/edit" element={<Profil edit title={'Editer mon profil '} />} />
+                    <Route path="/profil/:id" element={<Profil title={'Profil xxxxx '} />} />
+                    {/* <Route path="/profil/options" element={<Options />} /> */}
+                    <Route path="/profil/settings" element={<Setting />} />
+                    <Route path="/post/create" element={<CreatePost title={"Création d'un Post"} />} />
+                    <Route path="/post/edit/:id" element={<
+                    // @ts-ignore
+                    EditPost />} />
+                    <Route path="/post/:id" element={<GetPost />} />
+                  </Routes>
+          </Page>
+        </App>        
+      </Router>
       {/* </UserContext.Provider> */}
-    </Router>
     {/* <Index></Index> */}
-  </React.StrictMode>
+  </>
 );
 
 // export async function getStaticProps(){

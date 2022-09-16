@@ -13,18 +13,17 @@ import {
   faPencil,
   faFlag
 } from '@fortawesome/free-solid-svg-icons';
-import { UserContext } from '../../../App';
+import { UserContext } from '../../App';
 import { Link } from 'react-router-dom';
-import { addHeaderJWT } from '../../fetch/addHeaderJWT';
-import EditPost from '../../../pages/post/Edit';
+import { addHeaderJWT } from '../fetch/addHeaderJWT';
+import EditPost from '../../pages/post/Edit';
 
 // const { Link } = require('react-router-dom');
-const { server } = require('../../../server');
-const UnixToDate = require('../../date/UnixToDate').default;
+const { server } = require('../../server');
+const UnixToDate = require('../date/UnixToDate').default;
 
 // @ts-ignore
 function PostTemplate ({
-  title,
   description,
   _id,
   createBy,
@@ -37,9 +36,10 @@ function PostTemplate ({
 }) {
   // eslint-disable-next-line camelcase
   const ref_description = useRef();
-  const userContext = useContext(UserContext);
+  const [userContext, updateUserContext] = useContext(UserContext);
   const headerFetch = addHeaderJWT();
   const [Unmount, setUnmount] = useState(false);
+
 
   // const { title, textArea, _id, createBy, createByPseudo, imagesUrl, date, likes, usersLiked } = props;
   // console.log(likes);
@@ -51,27 +51,15 @@ function PostTemplate ({
   // @ts-ignore
   const [userLiked, setUserLike] = useState(
     // @ts-ignore
-    usersLiked.indexOf(userContext.userData.id) !== -1
+    usersLiked.indexOf(userContext.id) !== -1
   );
   const [currentDescritpion, setCurrentDescription] = useState(description);
   const [openDescritpion, setOpenDescritpion] = useState(false);
   const [image, setImage] = useState(imagesUrl);
 
   const [btnMore, setBtnMore] = useState(false);
-  const [admin, setAdmin] = useState(false);
+  const admin = (userContext._id === createBy) || userContext.admin? true : false;
 
-  //     let admin = false;
-  // if (userData.id === createBy) {
-  //     admin = true;
-  //   }
-  useEffect(() => {
-    // @ts-ignore
-    if (userContext.userData.id === createBy || userContext.userData.admin) {
-      setAdmin(true);
-    } else {
-      if (admin) setAdmin(false);
-    }
-  }, [userContext, createBy, admin]);
 
   useEffect(() => {
     function convertRemToPixels (rem) {
@@ -270,7 +258,7 @@ function PostTemplate ({
         {imagesUrl[0] ? (
           <img
             className=""
-            src={server + '/images/' + createBy + '/' + image}
+            src={server + '/images/' + createBy + '/assets/' + image}
             alt="post"></img>
         ) : (
           false
