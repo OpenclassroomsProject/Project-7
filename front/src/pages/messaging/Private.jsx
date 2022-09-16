@@ -1,7 +1,7 @@
 import { PrivateConversation } from "../../components/messaging/_PrivateConversation"
 import { useState ,useContext } from "react";
 import { useParams } from "react-router-dom";
-import { UserContext } from "../../App";
+import { CacheContext, UserContext } from "../../App";
 import { MessageReceive, MessageSend } from "../../components/messaging/_PrivateConversation";
 import InputMessage from "../../components/messaging/_Input";
 import { useEffect } from "react";
@@ -15,6 +15,7 @@ const Private = ()=>{
     // }
     const {idConversation} = useParams()
     const userContext = useContext(UserContext)
+    const cacheContext = useContext(CacheContext)
     const [allMessage, updateAllMessage] = useState(null);
 
     let i;
@@ -26,9 +27,12 @@ const Private = ()=>{
         }
     });
     const RecipientInfo = userContext[0].conversation[i].dataRecipient|| false;
+    const {pseudo} = RecipientInfo.recipientInfo;
 
 
     useEffect(()=>{
+          cacheContext.value.header.updateNav({type:'messaging', title:pseudo})
+
         if(idConversation && allMessage === null){
            console.log("fetch messages");
             fetch(server+'/api/conversation/'+idConversation, {headers: addHeaderJWT()})
@@ -41,10 +45,9 @@ const Private = ()=>{
         
     })
 
-    const {pseudo} = RecipientInfo.recipientInfo;
 
     return <>
-        <NavMobile privateConv title={pseudo}/>
+        {/* <NavMobile privateConv title={pseudo}/> */}
         <div className={"h-full w-full flex flex-col justify-end pb-2"}>
 
             {allMessage && allMessage.length !==0 && allMessage.map((message,index)=> {return message.sendBy === userContext._id? 

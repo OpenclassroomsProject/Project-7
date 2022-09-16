@@ -13,9 +13,10 @@ import { CacheContext, UserContext } from '../App';
 
 export default function Home ({ title }) {
   // const theme = _theme(useContext(ThemeContext));
-  const [userContext, updateUserContext] = useContext(UserContext)
-  // console.log(theme);
+  const [userContext, updateUserContext] = useContext(UserContext);
+
   const cacheContext= useContext(CacheContext)
+  // console.log(cacheContext.value.header);
   const [SpinnerState, setSpinner] = useState(cacheContext.home? false:true);
   
   document.title = title;

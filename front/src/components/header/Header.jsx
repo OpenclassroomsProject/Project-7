@@ -56,7 +56,7 @@ export default function Header ({className}) {
       <header className={`flex justify-between  shadow-xl px-3 py-2 w-screen border-b border-black border-opacity-[15%]
                          ${className} ${!userContext? 'py-4 sm:py-0':' '}`}>
         {userContext?  
-            <Connected userContext={userContext}/>
+            <Connected/>
           :
             <Nav className={'flex-row'}>
               <Visitors/>

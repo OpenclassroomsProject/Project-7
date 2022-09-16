@@ -1,4 +1,4 @@
-import { useState,useEffect, useContext, memo, createRef, useLayoutEffect } from "react";
+import { useState,useEffect, useContext, memo, createRef, useLayoutEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import { ResponsiveContext, UserContext } from "../../../App";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,16 +9,44 @@ import { Logo } from "../Header";
 import { ThemeContext } from "../../../pages/profil/Settings";
 import { CacheContext } from "../../../App";
 import Avatar from "../../avatar/_Avatar";
+import NavMessaging from "../../messaging/_NavMessaging";
+import { NavMobile } from "../../../pages/messaging/Messaging";
 
+
+const initialState = {nav:false};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'messaging':
+      // const messaging = !state.messaging? <NavMessaging/> : false
+      console.log(action);
+      return {...state , nav: "messaging",title : action.title}
+    case 'default':
+      return {initialState}
+    default:
+      throw new Error();
+  }
+}
 
 const Connected = () => {
+    const [states , dispatch] = useReducer(reducer,initialState)
+    
+
+    const [Nav, setNav] = useState(false);
+
     const [userContext, updateConntext] = useContext(UserContext)
     const cacheContext = useContext(CacheContext);
     const [ClickProfil, setClickProfil] = useState(false);
     const [ClickBell, setClickBell] = useState(false);
-    // const responsiveContext = useContext(ResponsiveContext)
-    const ButtonRef = createRef()
+
     
+    // const responsiveContext = useContext(ResponsiveContext)
+  // if(cacheContext){
+  //   console.log(cacheContext);
+  //   cacheContext
+  // }
+
+    const ButtonRef = createRef()
     const cssButton ='  cursor-pointer w-10  h-10 sm:border-[2px] sm:flex justify-center items-center  rounded-full overflow-hidden ';
     const style = {
       button: cssButton,
@@ -31,7 +59,7 @@ const Connected = () => {
     function closeProfilOption (){
       if(ClickProfil) return setClickProfil(false)
     }
-    cacheContext.value.header = {closeProfilOption : closeProfilOption  }
+    cacheContext.value.header = {closeProfilOption : closeProfilOption, updateNav: dispatch  }
 
     const PreviewAvatar = ()=>{
       
@@ -172,6 +200,50 @@ const Connected = () => {
       )
     }
 
+    const DefaultNav = ()=>{
+      return(
+        <>
+          <Logo className={'hidden sm:flex sm:w-52 '}/>
+          
+          <Link to={!userContext ? '/login' : '/messagerie'}
+            className={`text-black w-10 h-10 sm:hidden`} onClick={(e)=>{
+              cacheContext.value.previousPath.push(window.location.pathname)
+              // cacheContext.value.previousPath.push(window.location.pathname)
+            }}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      id="messages-medium"
+                      data-supported-dps="24x24"
+                      fill="#aaaa"
+                      >
+                      <path d="M16 4H8a7 7 0 000 14h4v4l8.16-5.39A6.78 6.78 0 0023 11a7 7 0 00-7-7zm-8 8.25A1.25 1.25 0 119.25 11 1.25 1.25 0 018 12.25zm4 0A1.25 1.25 0 1113.25 11 1.25 1.25 0 0112 12.25zm4 0A1.25 1.25 0 1117.25 11 1.25 1.25 0 0116 12.25z"></path>
+                    </svg>
+          </Link>
+
+          <SearchBar/>
+          {/* {states.Nav&& states.Nav.map(V=><V/></>} */}
+          <div className="flex">
+              <Link to="/" className={style.button + 'hidden'} onClick={closeProfilOption}>
+                  <FontAwesomeIcon className={style.iconButton} icon={faHouseChimney} height="100%" width="100%" />
+              </Link>
+
+              <button
+                    className={`${
+                      ClickBell ? style.buttonPush : style.button + style.buttonHover
+                    } mr-2 ml-2 hidden sm:flex' `}
+                    onClick={closeProfilOption}>
+                    <FontAwesomeIcon className={style.iconButton} icon={faBell} height="100%" />
+              </button>
+                
+              <PreviewAvatar>Profil</PreviewAvatar>
+          </div>
+
+          {/* ================ OTION WHEN CLICK PROFIL ON DESKTOP ================*/}
+          {ClickProfil ? <Option/>: false }
+        </>
+      )
+    }
 
     // const ProfilPicture = memo(function ProfilPicture({ src }) {
     //   return <img src={src} className="rounded-full h-full"   height={'100%'} alt="user profil" />;
@@ -180,57 +252,27 @@ const Connected = () => {
     const url = window.location.origin.split(':')
     const urlAvatar = url[0]+':'+url[1]+":3001"+userContext.avatar
 
+    function switchNav(state){
+      switch (state.nav) {
+        case 'messaging':
+          console.log(state);
+          return <NavMobile title={state.title}/>     
+        default:
+          break;
+      }
+    }
     return (
         // ========================================== Nav top  =================================================
-    <nav className="flex flex-row-reverse sm:flex-row justify-between w-full">
-      <Logo className={'hidden sm:flex sm:w-52 '}/>
-
-      <Link
-              // @ts-ignore
-              to={!userContext ? '/login' : '/messagerie'}
-              // @ts-ignore
-              className={`text-black w-10 h-10 sm:hidden`} onClick={(e)=>{
-                // e.preventDefault()
-                // console.log(cacheContext);
-                // let tmp = {...cacheContext}
-                // ButtonRef.current.click();
-                // closeProfilOption()
-                cacheContext.value.previousPath.push(window.location.pathname)
-                // cacheContext.updateCache(tmp)
-              }}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                id="messages-medium"
-                data-supported-dps="24x24"
-                fill="#aaaa"
-                >
-                <path d="M16 4H8a7 7 0 000 14h4v4l8.16-5.39A6.78 6.78 0 0023 11a7 7 0 00-7-7zm-8 8.25A1.25 1.25 0 119.25 11 1.25 1.25 0 018 12.25zm4 0A1.25 1.25 0 1113.25 11 1.25 1.25 0 0112 12.25zm4 0A1.25 1.25 0 1117.25 11 1.25 1.25 0 0116 12.25z"></path>
-              </svg>
-      </Link>
-
-      <SearchBar/>
-
-      <div className="flex">
-        <Link to="/" className={style.button + 'hidden'} onClick={closeProfilOption}>
-            <FontAwesomeIcon className={style.iconButton} icon={faHouseChimney} height="100%" width="100%" />
-        </Link>
-
-        <button
-              className={`${
-                ClickBell ? style.buttonPush : style.button + style.buttonHover
-              } mr-2 ml-2 hidden sm:flex' `}
-              onClick={closeProfilOption}>
-              <FontAwesomeIcon className={style.iconButton} icon={faBell} height="100%" />
-        </button>
-          
-        <PreviewAvatar>Profil</PreviewAvatar>
-      </div>
-
-      {/* ================ OTION WHEN CLICK PROFIL ON DESKTOP ================*/}
-      {ClickProfil ? <Option/>: false }
-
-      <NavBottom/>
+    <nav className="flex flex-row-reverse sm:flex-row justify-between w-full h-10">
+      {!states.nav?
+        <DefaultNav/>
+        :
+        switchNav(states)
+      }
+      {states.nav !== 'messaging'?
+        <NavBottom/>
+      :false
+      }
     </nav>
       // ========================================== End nav top  =================================================
       );

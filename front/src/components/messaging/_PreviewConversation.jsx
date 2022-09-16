@@ -1,7 +1,7 @@
 import Avatar from "../avatar/_Avatar";
 import { server } from "../../server";
 import { Link } from "react-router-dom";
-const PreviewConversation = ({conversationId, link, data,updateConversationOpen, ConversationOpen}) => {
+const PreviewConversation = ({conversationId, link, data,updateConversationOpen, ConversationOpen,onClick}) => {
     const idConversation= conversationId;
     // const recipient = with_id;
     
@@ -22,16 +22,16 @@ const PreviewConversation = ({conversationId, link, data,updateConversationOpen,
     }
 
     return ( 
-        <Wrapper className='bg-white h-16 flex hover:bg-[#dededeaa] w-[inherit] cursor-pointer'>
+        <Wrapper className='bg-white h-16 flex hover:bg-[#dededeaa]  cursor-pointer w-full'>
 
             <div className="h-12 aspect-square m-auto ml-2 mr-4">
                 <Avatar src={server+avatar}/>
             </div>
 
 
-            <div className=" flex flex-col justify-center border-b w-full" onClick={()=>{ 
+            <div className=" flex flex-col justify-center border-b w-full" onClick={(e)=>{ 
                 if(link){
-                    return 
+                    return onClick(e);
                 }
                 if(ConversationOpen.indexOf(idConversation)=== 0 ) return console.log('conversation already open ')
                 updateConversationOpen([...ConversationOpen , idConversation])
