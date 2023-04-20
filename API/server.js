@@ -1,5 +1,7 @@
 const http = require('http');
 const app = require('./app_old');
+// const port = normalizePort(process.env.PORT || '3000');
+const port = 8081;
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
@@ -32,6 +34,7 @@ const errorHandler = (error) => {
       throw error;
   }
 };
+const server = http.createServer(app);
 server.on('error', errorHandler);
 server.on('listening', () => {
   const address = server.address();
